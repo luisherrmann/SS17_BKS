@@ -21,7 +21,7 @@ int copy(char *sourcename, char *targetname){
 			writtenBytes = writtenBytes + write(fd_target,buf,readBytes);
 			readBytes = read(fd_source, buf, bufSize);
 		}
-		printf("%zu Bytes geschrieben\n",writtenBytes);
+		printf("%zd Bytes geschrieben\n",writtenBytes);
 		close(fd_source);
 		close(fd_target);
 	} 	
