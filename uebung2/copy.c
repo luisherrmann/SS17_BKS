@@ -5,13 +5,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <stdio.h>
+#include <stdio.h>	//TODO: printf durch syscall ersetzen und stdio.h Bibliothek entfernen
 
 int copy(char *sourcename, char *targetname){
 	int try_target = open(targetname,O_WRONLY);	
 	if (try_target < 0){
-		int fd_target = open(targetname,O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH | S_IWGRP | S_IWUSR |O_APPEND);	
-		//fd von targetname < 0 => target file was not found ? andere Fehler? -> continue	
+		//fd von targetname < 0 => target file was not found ? andere Fehler? -> continue
+		int fd_target = open(targetname,O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWUSR);	
 		int fd_source = open(sourcename,O_RDONLY);
 		size_t bufSize = 128;		
 		void *buf = malloc(bufSize);
