@@ -1,0 +1,106 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{courier}
+\usepackage{hyperref}
+
+\begin{document}
+	
+\definecolor{bg}{RGB}{230,230,230}
+	
+\hrulefill
+\begin{center}
+	\bfseries % Fettdruck einschalten
+	\sffamily % Serifenlose Schrift
+	\begin{huge}
+		Betriebs- und Kommunikationssysteme
+	\end{huge}\\
+	\begin{Large}
+		Sommersemester 2017, 1. Übungsblatt
+	\end{Large}\\
+	\begin{small}
+		Christopher Husemann, Luis Herrmann; Tutor: Katharina Klost; Mi 10:00-12:00
+	\end{small}
+	
+	\vspace{-10pt}
+\end{center}
+\hrulefill
+
+\section*{1. Aufgabe: Entwicklung der Betriebssysteme}
+\subsection*{Betrachtung des Betriebssystems Plan9}
+
+\subsubsection*{1. Wann wurde das Betriebssystem entwickelt? Wird es noch weiterentwickelt?}
+Das Betriebssystem Plan9 wurde in den späten 1980-Jahren von den Bell Laboratories entwickelt. 1987 begann die interne Entwicklung und ab 1989 wurde Plan9 eingesetzt. Plan9 wird nur noch in sehr geringem Umfang gewartet und weiterentwickelt. Die letzten Updates stammes aus Januar 2016. Das Fork Plan9 Front spaltete sich 2011 ab und wird noch weiterentwickelt.
+
+\subsubsection*{2. Hat das Betriebssystem einen besonderen Anwendungszweck?}
+Plan9 wurde von den Bell Laboratories als Forschungsbetriebssystem entwickelt. Ziel war ein Mehrbenutzer*innensystem, in dem rechenintensive Prozesse in Rechenzentren und Speicher auf File Server ausgelagert werden. 
+
+\subsubsection*{3. Ist eine spezielle Hardware nötig?}
+Um das System optimal zu nutzen ist ein Rechenserver und ein File Server notwendig.
+
+\subsubsection*{4. Stellt es bestimmte Dienste (eng: services) bereit?}
+Prozesse haben ihre eigenen Namensräume für den Speicherzugriff. Das System bietet spezielle Konventionen für gemeinsame Ressourcen.
+Prozesse können ihre Dienste über das virtuelle Dateisystem auch anderen Prozessen zugänglich machen. So können die Prozesse miteinander kommunizieren.
+
+\subsubsection*{5. Worin hebt es sich von anderen Betriebssystemen ab?}
+Plan9 hebt sich insbesondere als frühes verteiltes Betriebsystem von anderen anderen - in der Regel lokalen - Betriebsystemen ab.
+
+\subsubsection*{Quellen}
+\url{https://9p.io/plan9/about.html}
+
+\url{https://en.wikipedia.org/wiki/Plan_9_from_Bell_Labs}
+
+\subsection*{Betrachtung des Betriebssystems KeyKOS}
+
+\subsubsection*{1. Wann wurde das Betriebssystem entwickelt? Wird es noch weiterentwickelt?}
+
+Das Betriebssystem KeyKOS wurde bereits im Jahre 1972 konzipiert und über den Zeitraum einer Dekade bis zur Marktreife entwickelt. Es ist unklar, wann die Entwicklung an dem Betriebssystem eingestellt wurde, aber da es für die S/370-Architektur von IBM konzipiert war, welche 1990 durch die S/390-Architektur abgelöst wurde, gehen wir davon aus, dass dies zu Beginn der 90er-Jahre der Fall war. Auf dem KeyKOS-Microkernel aufbauend wurde ein UNIX-Betriebssystem (KeyNIX) entwickelt, doch die Tatsache, dass man zu diesem außerhalb von cap-lore.com keine Informationen findet, lässt darauf schließen, dass dieses ebenfalls nicht mehr entwickelt wird.
+Langfristig weiterentwickelt wurde KeyKOS in Form des Betriebssystems EROS, welches von KeyKOS für Intel-Architekturen abgeleitet wurde und seinerseits seit 2005 durch die Nachfolgersysteme CaprOS und Coyotos abgelöst wurde.
+
+\subsubsection*{2. Hat das Betriebssystem einen besonderen Anwendungszweck?}
+
+Das Betriebssystem sollte drei entscheidende Dinge leisten: Es sollte höhere Buchführungsgenauigkeit bieten als andere damalige Systeme (wie genau wird jedoch nicht spezifiziert), es sollte unbeaufsichtigt, ununterbrochen laufen können und es sollte hohen Sicherheitsstandards genügen und gleichzeitig effizient sein. Besonders wichtig war bei der Entwicklung die Lösung des \textbf{mutually suspicious user problem} (MSUP), womit das Betriebssystem besonders auf Unternehmen ausgerichtet war, die mit andernen Entitäten (zum Beispiel konkurrienden Unternehmen) Daten austauschen müssen. Das MSUP bezeichnet eine Situation, in der ein Server einem Client Daten zur Verfügung stellen muss, wobei der Client nicht möchte, dass der Server erfährt, auf welche Daten er zugreift und der Server nicht uneingeschränkten Zugriff auf alle Daten zur Verfügung stellen möchte.
+
+\subsubsection*{3. Ist eine spezielle Hardware nötig?}
+
+KeyKOS wurde für die S/370-Großrechnerarchitektur von IBM entwickelt, es existieren jedoch auch Portierungen für die Motorola-68000-Architektur [1].
+
+\subsubsection*{4. Stellt es bestimmte Dienste (eng: services) bereit?}
+
+Das Betriebssystem stellt eine Reihe von Features bereit. Zu den wichtigsten zählen ein einfaches Scheduling System (welches durch Schnittstellen über Anwendungen erweitert werden kann), sowie ein Checkpoint System um die Auswirkungen von Systemabstürzen zu reduzieren. Außerdem stellt das Betriebssystem einen separaten virtuellen Adressraum für jeden KeyKOS-Prozess bereit, redundante Speicherung systemkritischer Daten, sowie Schlüssel zwecks Übertragung von Daten zwischen Prozessen.
+
+
+\subsubsection*{5. Worin hebt es sich von anderen Betriebssystemen ab?}
+
+KeyKOS hebt sich von anderen Betriebssystem vor allem durch seine Sicherheitskonzepte ab, welche eine sehr strikte Umsetzung des \textbf{principle of least authority} (Prinzip der minimalen Authorität) vorsehen. Dieses Prinzip besagt, dass Entitäten einer Abstraktionsebene nur auf genau die Ressourcen zugreifen dürfen, die sie benötigen. Dieses Prinzip ist mit dem Konzept von Ringen, in denen Entitäten unterschiedliche Befugnisse haben, nicht umzusetzen, da Entitäten aus einem Ring im Prinzip auf die Ressourcen anderer Entitäten im gleichen oder äußeren Ringen zugreifen können. Das Sicherheitskonzept von KeyKOS ist daher auf Autoritätstokens oder \textbf{Keys} basiert.
+
+Die Daten von Entitäten sind in KeyKOS grundsätzlich gekapselt. Um diese Kapselung zu gewährleisten, werden Entitäten oder Objekte von sogenannten \textbf{factories} erzeugt, deren Vertrauenswürdigkeit vorausgesetzt wird (und überprüft werden kann, obwohl wie genau nicht aus den Quellen hervorgeht). Diese sind Entitäten, welche außerhalb der Kernel-Ebene existieren und andere Entitäten eines bestimmten Typs produzieren. Der Zugriff auf Ressourcen einer Entität ist nur mittels eines Keys möglich, welches der Entität $A$, die über diesen Schlüssel verfügt, Zugriff auf eine bestimmte Ressource einer Entität $B$ verleiht. Das Erzeugen von Schlüsseln ist dabei der Server-Entität vorbehalten, welche über die Ressourcen verfügt, auf die der Zugriff freigegeben werden soll. Ein 8-Bit-Feld im Schlüssel kann dabei benutzt werden, um zwischen Klassen von Client-Entitäten zu unterscheiden, welchen unterschiedliche Zugriffsrechte gewährt werden.\\
+
+Entsprechend ist auch die Kommunikation zwischen Entitäten auf Keys aufgebaut. Nachrichten zwischen Entitäten bestehen aus einem sogenannten parameter word, einem String von bis zu 4096 Bytes und bis zu vier Schlüsseln.
+Da die Behandlung von Nachrichten von der entsprechenden Entität gehandhabt werden, welche typischerweise nicht Bestandteil des Kernels ist, führt jeder Nachricht zu einem (teuren) Kontextwechsel.
+
+\subsubsection*{Quellen}
+
+\url{http://cap-lore.com/CapTheory/upenn/Key370/Key370.html}
+
+[1] \url{http://cap-lore.com/CapTheory/upenn/NanoKernel/NanoKernel.pdf}
+
+[2] \url{https://en.wikipedia.org/wiki/EROS_(microkernel)}
+
+[3] \url{http://cap-lore.com/CapTheory/upenn/Gnosis/Gnosis.html}
+
+\section*{Aufgabe 2: Hallo (C) Welt}
+
+\subsection*{C-Programm addParam.c}
+
+\begin{minipage}{\textwidth}
+	
+\inputminted[mathescape,breaklines,bgcolor=bg,linenos,numbersep=5pt,tabsize=3]{c}{addParam.c}
+
+\end{minipage}
+
+\end{document}
