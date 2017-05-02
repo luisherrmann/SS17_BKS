@@ -4,8 +4,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include <stdio.h>	//TODO: printf durch syscall ersetzen und stdio.h Bibliothek entfernen
+#include "trashcan.h"
 
 int copy(char *sourcename, char *targetname){
 	int try_target = open(targetname,O_WRONLY);	
@@ -21,7 +20,8 @@ int copy(char *sourcename, char *targetname){
 			writtenBytes = writtenBytes + write(fd_target,buf,readBytes);
 			readBytes = read(fd_source, buf, bufSize);
 		}
-		printf("%zd Bytes geschrieben\n",writtenBytes);
+		const char message[] ="Datei erfolgreich kopiert.\n";
+		write(STDOUT_FILENO,message,sizeof(message));
 		close(fd_source);
 		close(fd_target);
 	} 	
@@ -29,10 +29,3 @@ int copy(char *sourcename, char *targetname){
 	
 	return 0;
 }
-int main (){
-	char *source = "test.txt";
-	char *target = "target.txt";	
-	copy(source,target);	
-	return EXIT_SUCCESS;		
-}
-
