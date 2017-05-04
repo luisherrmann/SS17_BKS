@@ -5,7 +5,7 @@
 #define RED "\033[31m"
 #define WHITE "\033[39m"
 
-/** Die Funktion checkConvertRes(char* string, char* err) bekommt den Pointer auf einen String (string) und den Pointer auf das zuletzt gelesene Zeichen (err) übergeben. Wenn diese Funktion nach einer strtol Funktion aufgerufen wird, überprüft sie ob das zuletzt gelesene Zeichen des Strings '0' ist. Wenn dies nicht der Fall ist (Strings terminieren mit '0'), dann wird eine Fehlermeldung ausgegeben und das Programm beendet.
+/** Die Funktion checkConvertRes(char* string, char* err) bekommt den Pointer auf einen String (string) und den Pointer auf das zuletzt gelesene Zeichen (err) übergeben. Wenn diese Funktion nach einer strtol Funktion mit den entsprechenden Parametern aufgerufen wird, überprüft sie ob das zuletzt korrekt gelesene Zeichen des Strings '0' ist, da Strings mit '0' terminieren. Wenn dies der Fall ist und der Parameter kein '0' war, dann wurden nicht nur Ziffern übergeben. Es wird eine Fehlermeldung ausgegeben und das Programm beendet.
 
 */
 void checkConvertRes(char* string,char* err){
@@ -14,7 +14,7 @@ void checkConvertRes(char* string,char* err){
 		exit(EXIT_FAILURE);
 	}
 }
-/** Die Funktion checkParamCount(int argc) überprüft, ob mindestens zwei Parameter übergeben werden. Wenn dies nicht der Fall ist, dann wird ein entsprechender Fehler ausgegeben und das Programm wird beendet.
+/** Die Funktion checkParamCount(int argc) überprüft, ob mindestens zwei Parameter (zusätzlich zum Dateinamen) übergeben werden. Wenn dies nicht der Fall ist, dann wird ein entsprechender Fehler ausgegeben und das Programm wird beendet.
 */
 void checkParamCount(int argc){
 	if (argc<3){
