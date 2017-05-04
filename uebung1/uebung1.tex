@@ -12,6 +12,10 @@
 \begin{document}
 	
 \definecolor{bg}{RGB}{230,230,230}
+\newcommand{\inputmintedframed}[2]{
+	\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+		\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
 	
 \hrulefill
 \begin{center}
@@ -98,8 +102,6 @@ Da die Behandlung von Nachrichten von der entsprechenden Entität gehandhabt wer
 
 \subsection*{C-Programm addParam.c}
 
-\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
-	\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{c}{addParam.c}
-\end{mdframed}
+\inputmintedframed{c}{addParam.c}
 
 \end{document}
