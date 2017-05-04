@@ -1,3 +1,4 @@
+//Luis Herrmann & Christoph Husemann - TI3 - Übung 1
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>
