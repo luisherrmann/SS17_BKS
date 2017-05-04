@@ -17,6 +17,7 @@ int deleteFile(char *filename){
 	int resultCopy = copy(filename,target);
 	int resultDel = 0;
 	if (resultCopy==0) unlink(filename);
+	free(target);
 	return resultCopy+resultDel;
 }
 int main (int argc, char *argv[]){
