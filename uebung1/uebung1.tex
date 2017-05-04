@@ -5,6 +5,7 @@
 \usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
 \usepackage{listings}
 \usepackage{minted}
+\usepackage{mdframed}
 \usepackage{courier}
 \usepackage{hyperref}
 
@@ -97,10 +98,8 @@ Da die Behandlung von Nachrichten von der entsprechenden Entität gehandhabt wer
 
 \subsection*{C-Programm addParam.c}
 
-\begin{minipage}{\textwidth}
-	
-\inputminted[mathescape,breaklines,bgcolor=bg,linenos,numbersep=5pt,tabsize=3]{c}{addParam.c}
-
-\end{minipage}
+\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+	\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{c}{addParam.c}
+\end{mdframed}
 
 \end{document}
