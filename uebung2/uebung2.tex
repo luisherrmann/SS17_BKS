@@ -28,7 +28,7 @@
 		Sommersemester 2017, 2. Übungsblatt
 	\end{Large}\\
 	\begin{small}
-		Christopher Husemann, Luis Herrmann; Tutor: Katharina Klost; Mi 10:00-12:00
+		Christopher Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
 	\end{small}
 	
 	\vspace{-10pt}
@@ -54,13 +54,13 @@
 		\begin{enumerate}
 			\item Es gibt keine Unterscheidung zwischen User-Mode und Kernel-Mode, alle Prozesse laufen mit den gleichen Berechtigungen. Die Adressen des vom Syscall referezierten Codes werden vom Linker in das Programm eingebaut und direkt ausgeführt.
 			
-			\item Es gibt eine Unterscheidung zwischen Prozessen im User-Mode und solchen im Kernel-Mode. Ein Prozess $A$ im User-Mode starten durch einen Syscall eine Interrupt Service Routine (ISR) im Kernel-Mode; diese startet mit den übergebenen Parametern die gewünschte Serviceroutine, welche im Kernel-Mode läuft. Sobald diese terminiert, setzt die Ausführung der ISR fort und diese übergibt die Return-Werte der Serviceroutine an den aufrufenden Prozess $A$, welcher seine Ausführung im Usermodus fortsetzt. Es sind nur zwei Moduswechsel notwendig; ein Prozesswechsel KANN stattfinden wenn die Serviceroutine in einem separaten Prozess gestartet wird, ist aber nicht zwingend.
+			\item Es gibt eine Unterscheidung zwischen Prozessen im User-Mode und solchen im Kernel-Mode. Ein Prozess $A$ im User-Mode starten durch einen Syscall eine Interrupt Service Routine (ISR) im Kernel-Mode; diese startet mit den übergebenen Parametern über die Interrupt Vector Table (IVT) die gewünschte Serviceroutine, welche im Kernel-Mode läuft. Sobald diese terminiert, setzt die Ausführung der ISR fort und diese übergibt die Return-Werte der Serviceroutine an den aufrufenden Prozess $A$, welcher seine Ausführung im Usermodus fortsetzt. Es sind nur zwei Moduswechsel notwendig; ein Prozesswechsel KANN stattfinden wenn die Serviceroutine in einem separaten Prozess gestartet wird, ist aber nicht zwingend.
 		\end{enumerate}
 		Microkernel:
 		\begin{enumerate}
 			\item Ein Prozess $A$ im User-Mode führt zunächst eine Syscall durch und startet eine Routine des Microkernels im Kernel-Modus, welche einen Kontextwechsel samt Parameterübergabe zum angefragten Modul $B$ des Betriebssystems im Usermodus vermittelt. Sobald die Ausführung des Moduls $B$ terminiert, wird wieder die Routine des Microkernels im Kernelmodus ausgeführt, welche Kontextwechsel samt Return-Übergabe zurück zu Prozess $A$ im User-Mode verwaltet.
 			
-			\item Die Kommunikation zwischen Prozessen wird über die Syscalls SEND und RECV weiter abstrahiert. Ein Prozess $A$ im Usermode führt einen Syscall SEND durch, welche per Moduswechsel eine Routine des Microkernels startet, die an einen Prozess $B$ zu übergebende Parameter erhält und nach Beendigung die Ausführung von Routine $A$ im Usermodus fortsetzt. Das empfangende Modul des Betriebssystems startet zu einem späteren einen RECV-Syscall und startet eine Microkernel-Routine, welche die von $A$ zurückgelegten Parameter an $B$ übergibt und $B$ führt seine Aufgabe im Usermodus aus. Bei Beendigung der Aufgabe führt $B$ seinerseits einen SEND-Syscall durch, um die Return-Werte der Bearbeitung an die Kernel-Routine übermitteln zu können, sodass Prozess $A$ durch einen SEND-Syscall die Return-Werte abrufen kann.
+			\item Die Kommunikation zwischen Prozessen wird über die Syscalls SEND und RECV weiter abstrahiert. Ein Prozess $A$ im Usermode führt einen Syscall SEND durch, welche per Moduswechsel eine Routine des Microkernels startet, die an einen Prozess $B$ zu übergebende Parameter erhält und nach Beendigung die Ausführung von Routine $A$ im Usermodus fortsetzt. Das empfangende Modul des Betriebssystems startet zu einem späteren einen RECV-Syscall und startet eine Microkernel-Routine, welche die von $A$ zurückgelegten Parameter an $B$ übergibt und $B$ führt seine Aufgabe im Usermodus aus. Bei Beendigung der Aufgabe führt $B$ seinerseits einen SEND-Syscall durch, um die Return-Werte der Bearbeitung an die Kernel-Routine übermitteln zu können, sodass Prozess $A$ durch einen RECV-Syscall die Return-Werte abrufen kann.
 		\end{enumerate}
 	
 	\url{http://www.cburch.com/csbsju/cs/350/notes/11/}
@@ -68,7 +68,7 @@
 
 \subsection*{Tanenbaum-Torvalds-Debatte}
 
-Die Tanenbaum-Torvalds-Debatte war eine Auseinandersetzung zwischen Andrew Tanenbaum und Linus Torwalds in der darum gestritten wurde, ob MINIX oder LINUX das bessere Betriebssystem sei. Zentraler Punkt des Streits war dabei die Kritik von Tanenbaum an dem Monolithic Kernel von LINUX, den er nicht als zukunftsfähig betrachtet und stattdessen einen Microkernel wie bei MINIX als überlegenes Kernelkonzept betrachtet. Der einzige Grund, weshalb sich Microkernel nicht durchgesetzt hätten sei die Tatsache, dass Monolithic Kernel (durch weniger Kontextwechsel) zu einer höheren Perfomance führten als Microkernel.
+Die Tanenbaum-Torvalds-Debatte war eine Auseinandersetzung zwischen Andrew Tanenbaum und Linus Torvalds in der darum gestritten wurde, ob MINIX oder LINUX das bessere Betriebssystem sei. Zentraler Punkt des Streits war dabei die Kritik von Tanenbaum an dem Monolithic Kernel von LINUX, den er nicht als zukunftsfähig betrachtet und stattdessen einen Microkernel wie bei MINIX als überlegenes Kernelkonzept betrachtet. Der einzige Grund, weshalb sich Microkernel nicht durchgesetzt hätten sei die Tatsache, dass Monolithic Kernel (durch weniger Kontextwechsel) zu einer höheren Perfomance führten als Microkernel.
 
 Dem hält Torvalds entgegen, dass der MINIX-Microkernel in der Theorie zwar schöner/besser sei als der monolitische Kernel von LINUX, praktisch jedoch nicht gut umgesetzt sei, zum Beispiel da es Probleme mit Multitasking gebe.
 
