@@ -55,7 +55,19 @@ Eine Aufgabe(Task) beschreibt in der Informatik ganz allgemein einen Arbeitsauft
 
 \subsection{Input-/Output Bibliothek ''stdio.h''}
 \subsubsection{Funktion der Bibliothek}
+Die Bibliothek ''stdio.h'' enthält die grundlegenden Schnittstellen für Puffer von Eingabe-/Ausgabedatenströmen für Dateien und Sockets.
 \subsubsection{Abgrenzung Stream und File Descriptor}
+\subsubsection*{Stream}
+Ein Datenstrom(Stream) liest oder schreibt Daten in eine Datei. Eine Datei repräsentiert dabei sowohl Dateien aus dem Dateisystem, als auch Hardwareschnittstellen wie beispielsweise die Tastatur, die Ausgabe auf dem Bildschirm oder eine Internetschnittstelle (Socket). 
+\subsubsection*{File Descriptor}
+Die Datei-ID (File Descriptor FD) wird erstellt, wenn ein Zugriff über einen Datenstrom auf eine Datei initialisiert wird. Der FD identifiziert die Datei in einer Tabelle aus Dateien, die für einen Datenstrom geöffnet wurden. 
 \subsubsection{stdin, stdout, stderr}
+Beim Programmstart werden Datenströme für Texte (stdin,stdout und stderr) vordefiniert und müssen nicht ausdrücklich geöffnet werden.
+\subsubsection*{standard input (stdin)}
+Der Text-Datenstrom stdin beschreibt den vordefinierten Standard-Eingabedatenstrom des Betriebssystems. So können beispielsweise in Linux über eine entsprechende Konstante für stdin als FD in der Regel Benutzereingaben aus der Konsole ausgelesen werden.
+\subsubsection*{standard output (stdout)}
+Der Text-Datenstrom stdout beschreibt den vordefinierten Standard-Ausgabedatenstrom des Betriebssystems. So können beispielsweise in Linux über eine entsprechende Konstante als FD für stdout in der Regel Texte in die Konsole geschrieben werden.
+\subsubsection*{standard error stderr}
+Der Text-Datenstrom stderr beschreibt den vordefinierten Standard-Ausgabedatenstrom des Betriebssystems für Fehler- und Diagnosebeschreibungen. So können beispielsweise in Linux über eine entsprechende Konstante als FD für stderr in der Regel Texte in die Fehlerausgabe geschrieben werden.
 \end{document}
 
