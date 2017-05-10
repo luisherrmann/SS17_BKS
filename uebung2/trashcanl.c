@@ -12,7 +12,7 @@
 
 int copy(char *sourcename, char *targetname){
 	int BUFFER_SIZE = 100;
-	char buffer[100] = "Hello, this is a test.";
+	char buffer[100];
 	int fd_target = open(targetname, O_WRONLY | O_APPEND | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
 	//O_EXCL Flag garantiert, dass das File erzeugt werden muss. Falls bereits existent, wird Fehler erzeugt.
 	if(fd_target < 0){
@@ -20,6 +20,7 @@ int copy(char *sourcename, char *targetname){
 			char *msg = "The specified target file already exists!\n";
 			write(STDERR_FILENO, msg, strlen(msg));
 		}
+		close(fd_target);
 		return EXIT_FAILURE;
 	}
 	int fd_source = open(sourcename, O_RDONLY);
@@ -28,6 +29,7 @@ int copy(char *sourcename, char *targetname){
 			char *msg = "The specified source file does not exist!\n";
 			write(STDERR_FILENO, msg, strlen(msg));
 		}
+		close(fd_source);
 		return EXIT_FAILURE;
 	}
 	ssize_t r;
@@ -85,12 +87,14 @@ int main(int argc, char *argv[]){
 		if(strcmp(argv[1],"-l") == 0){
 			void *dd = opendir(".ti3_trashcan");
 			struct dirent *dir;
-			while((dir = readdir(dd)) != NULL){
-				char *msg = malloc(strlen(dir->d_name) + 1);
+			while((dir = readdir(dd)) != NULL){	//Falls opendir ergibt Fehler return -> NULL | readdir(NULL) return NULL
+				char *msg = malloc(strlen(dir->d_name) + 1); //+1 für das Steuerzeichen des Zeilenumbruchs
 				strcat(msg, dir->d_name);
 				strcat(msg, "\n");
 				write(STDERR_FILENO, msg, strlen(msg));
+				free(msg);
 			}
+			closedir(dd);
 		}
 		else if(strcmp(argv[1],"-h") == 0){
 			help();
@@ -128,6 +132,7 @@ int main(int argc, char *argv[]){
 		else{
 			return illegal_input();
 		}
+		free(path);
 	}
 	else{
 		return illegal_input();
