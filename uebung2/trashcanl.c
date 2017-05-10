@@ -124,10 +124,12 @@ int main(int argc, char *argv[]){
 				return EXIT_FAILURE;
 			}
 		}
-		else if(strcmp(argv[1],"-f") == 0 && remove(path) == -1){
-			char *msg = "Could not remove copy in trashcan!\n";
-			write(STDERR_FILENO, msg, strlen(msg));
-			return EXIT_FAILURE;
+		else if(strcmp(argv[1],"-f") == 0){
+			if (remove(path) == -1){
+				char *msg = "Could not remove copy in trashcan!\n";
+				write(STDERR_FILENO, msg, strlen(msg));
+				return EXIT_FAILURE;
+			}
 		}
 		else{
 			return illegal_input();
