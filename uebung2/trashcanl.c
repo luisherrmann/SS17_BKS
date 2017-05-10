@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -110,7 +109,7 @@ int main(int argc, char *argv[]){
 		strcat(path,argv[2]);
 		if(strcmp(argv[1],"-d") == 0){
 			copy(argv[2],path);
-			if(remove(argv[2]) == -1){
+			if(unlink(argv[2]) == -1){
 				char *msg = "Could not remove source file!\n";
 				write(STDERR_FILENO, msg, strlen(msg));
 				return EXIT_FAILURE;
@@ -118,14 +117,14 @@ int main(int argc, char *argv[]){
 		}
 		else if(strcmp(argv[1],"-r") == 0){
 			copy(path,argv[2]);
-			if(remove(path) == -1){
+			if(unlink(path) == -1){
 				char *msg = "Could not remove copy in trashcan!\n";
 				write(STDERR_FILENO, msg, strlen(msg));
 				return EXIT_FAILURE;
 			}
 		}
 		else if(strcmp(argv[1],"-f") == 0){
-			if (remove(path) == -1){
+			if (unlink(path) == -1){
 				char *msg = "Could not remove copy in trashcan!\n";
 				write(STDERR_FILENO, msg, strlen(msg));
 				return EXIT_FAILURE;
