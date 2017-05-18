@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-
+#include <sys/wait.h>
 #include <string.h>
+#include <inttypes.h>
+
+#define BUFFER_SIZE 128
 
 void printfile(FILE *source){
-	int BUFFER_SIZE = 100;
+
 	char *buffer = malloc(BUFFER_SIZE);
 	if(source == NULL)
 	{
@@ -15,20 +18,18 @@ void printfile(FILE *source){
 			fprintf(stderr, "The file specified does not exist!");
 		}
 	}
-	int i = 0;
-	char curr;
-	while((curr = fgetc(source)) != EOF){
-		buffer[i] = curr;
-		//Reads until ESC is encountered.
-		if(buffer[i] == 27) break;
-		i++;
-		if(((i+1) % BUFFER_SIZE) == 0){
-			char *temp  = buffer;
-			buffer = malloc(strlen(buffer) + BUFFER_SIZE);
-			strcat(buffer, temp);
-		}
+	fseek(source, 0L, SEEK_END);	//search for EOF
+	long int size = ftell(source);	//position of EOF is the size of the file in Bytes
+	rewind(source);			//File wird wieder auf den Anfang gesetzt
+	char *temp = malloc(size);
+	while((buffer = fgets(buffer,BUFFER_SIZE,source))!=NULL){ //use fgets(bufferSize) instead
+		
+		strncat(temp,buffer,strlen(buffer));
+		
 	}
-	fprintf(stdout,"%s\n",buffer);
+	free(buffer);
+	fprintf(stdout,"%s\n",temp);
+	free(temp);
 	fclose(source);
 }
 
@@ -36,6 +37,7 @@ void printfile(FILE *source){
 
 
 int main(int argc, char* argv[]){
+	int status;
 	if(argc == 1){
 		fprintf(stdout, "Reading from stdin\n\n");
 		printfile(stdin);
@@ -52,6 +54,8 @@ int main(int argc, char* argv[]){
 				FILE *source = fopen(argv[i],"r");
 				printfile(source);
 				break;
+			}else {
+				wait(&status);
 			}
 		}
 	}
