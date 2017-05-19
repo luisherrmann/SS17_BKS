@@ -37,19 +37,19 @@
 
 \section{Aufgabe 1}
 \subsection{Was ist der PCB?}
-Der Process Control Block (PCB) ist ein betriebssystemabhängige Datenstruktur, die Informationen für den Dispatcher des Betriebssystems über den zugehörigen Prozess enthält. Der PCB besteht aus Informationen für die Identifikation des Prozesses, über die Statusinformationen des Prozessors und über den Zustand, sowie benötigte I/O-Schnittstellen des Prozesses.
+Der Process Control Block (PCB) ist eine betriebssystemabhängige Datenstruktur, die Informationen für den Dispatcher des Betriebssystems über den zugehörigen Prozess enthält. Der PCB besteht aus Informationen für die Identifikation des Prozesses, über die Statusinformationen des Prozessors und über den Zustand, sowie benötigte I/O-Schnittstellen des Prozesses.
 \subsubsection{Identifikations-Block}
-Der Identifikations-Block enthält die ID des Prozesses, sowie Informationen über Elternprozesse und des Benutzers.
+Der Identifikations-Block enthält die ID des Prozesses, sowie Informationen über Elternprozesse und Benutzer.
 \subsubsection{Prozessor-Status-Block}
 Der Prozessor-Status-Block enthält die Prozessor-Register, die für den Benutzer einsehbar sind, den Stack Pointer, den Zeiger auf den nächsten Befehl des Prozesses (PC) und den Status des Prozessors (PSW).
 \subsubsection{Prozess-Status und Schnittstellen}
-In diesem Block werden Informationen für das Scheduling des Prozesses wie der Status, die Priorität und das erwartete Ereignis des Prozesses gespeichert. Außerdem werden Informationen über die Menge der gespeicherten Daten und die Ausführungszeit auf der CPU gespeichert. Darüber hinaus werden in der Speicherverwaltung Informationen über den zugewiesenen Speicher und Zugriffe auf globale Daten aller Benutzer gespeichert. Im Bereich für die Eingabe-/Ausgabeverwaltung (I/O) werden Informationen aktuell offene Dateien und Sockets gespeichert.
+In diesem Block werden Informationen für das Scheduling des Prozesses wie der Status, die Priorität und das erwartete Ereignis des Prozesses gespeichert. Außerdem werden Informationen über die Menge der gespeicherten Daten und die Ausführungszeit auf der CPU archiviert. Darüber hinaus werden in der Speicherverwaltung Informationen über den zugewiesenen Speicher und Zugriffe auf globale Daten aller Benutzer gespeichert. Im Bereich für die Eingabe-/Ausgabeverwaltung (I/O) werden Informationen, aktuell offene Dateien und Sockets gespeichert.
 
 \subsection{Abgrenzung der Begriffe}
 \subsubsection*{Prozess}
 Ein Prozess ist eine aktive Instanz eines Programms auf einem Computer mit einer Befehlsfolge, einem aktuellen Status(Register, PC, PSW) und einem vom Betriebssystem zugewiesenen Speicherbereich (u.a. für temporäre Daten auf dem Call Stack, globale Daten und einem dynamischer Speicherbereich). Ein Programm (passiv) kann zu einem oder mehreren aktiven Prozessen werden. Ein Prozess hat einen bis mehrere Threads.
 \subsubsection*{Thread}
-Ein Thread ist eine Laufzeitinstanz in einem Prozess, die sich mit anderen Threads desselben Prozesses einen gemeinsamen Adressraum bzw. Speicherbereich teilt. Jeder Prozess hat ein oder mehrere Threads. 
+Ein Thread ist eine Laufzeitinstanz in einem Prozess, dessen Speicherbereich im Adressraum eines übergeordneten Prozesses liegt. Er kann sich mit anderen Threads des Prozesses einen gemeinsamen Adressraum bzw. Speicherbereich teilen, aber auch einen eigenen lokalen Speicherbereich haben. Jeder Prozess hat ein oder mehrere Threads. 
 \subsubsection*{Task}
 Eine Aufgabe(Task) beschreibt in der Informatik ganz allgemein einen Arbeitsauftrag. Der Begriff Aufgabe (Task) ist unscharf definiert und wird auch allgemein als Oberbegriff für Prozesse und Threads genutzt. \footnote{$ https://en.wikipedia.org/wiki/Task_(computing)$}
 
@@ -69,5 +69,14 @@ Der Text-Datenstrom stdin beschreibt den vordefinierten Standard-Eingabedatenstr
 Der Text-Datenstrom stdout beschreibt den vordefinierten Standard-Ausgabedatenstrom des Betriebssystems. So können beispielsweise in Linux über eine entsprechende Konstante als FD für stdout in der Regel Texte in die Konsole geschrieben werden.
 \subsubsection*{standard error stderr}
 Der Text-Datenstrom stderr beschreibt den vordefinierten Standard-Ausgabedatenstrom des Betriebssystems für Fehler- und Diagnosebeschreibungen. So können beispielsweise in Linux über eine entsprechende Konstante als FD für stderr in der Regel Texte in die Fehlerausgabe geschrieben werden.
-\end{document}
 
+\section{Aufgabe 2}
+
+\subsection{my\_wc:}
+\inputmintedframed{c}{my_wc.c}
+
+\subsection{my\_cat:}
+\inputmintedframed{c}{my_cat.c}
+
+
+\end{document}

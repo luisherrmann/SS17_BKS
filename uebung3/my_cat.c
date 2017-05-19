@@ -8,56 +8,57 @@
 
 #define BUFFER_SIZE 128
 
-void printfile(FILE *source){
+int printfile(FILE *source){
 
 	char *buffer = malloc(BUFFER_SIZE);
 	if(source == NULL)
 	{
 		fprintf(stderr, "An error has occured while reading!\n");
 		if(errno == ENOENT){
-			fprintf(stderr, "The file specified does not exist!");
+			fprintf(stderr, "The file specified does not exist!\n");
 		}
+		return 0;
 	}
-	fseek(source, 0L, SEEK_END);	//search for EOF
-	long int size = ftell(source);	//position of EOF is the size of the file in Bytes
-	rewind(source);			//File wird wieder auf den Anfang gesetzt
-	char *temp = malloc(size);
-	while((buffer = fgets(buffer,BUFFER_SIZE,source))!=NULL){ //use fgets(bufferSize) instead
-		
-		strncat(temp,buffer,strlen(buffer));
-		
+	char *content = malloc(BUFFER_SIZE);
+	while(fgets(buffer,BUFFER_SIZE,source) != NULL){
+		char* temp = malloc(strlen(content) + strlen(buffer) + 1);
+		strcpy(temp,content);
+		strcat(temp,buffer);
+		content = temp;
 	}
 	free(buffer);
-	fprintf(stdout,"%s\n",temp);
-	free(temp);
+	fprintf(stdout,"%s\n",content);
+	free(content);
 	fclose(source);
+	return 1;
 }
-
-
-
 
 int main(int argc, char* argv[]){
 	int status;
 	if(argc == 1){
 		fprintf(stdout, "Reading from stdin\n\n");
-		printfile(stdin);
+		int ret = printfile(stdin);
+		if(ret == 0) return 0;
 	}
-	if(argc == 2){
+	else if(argc == 2){
 		FILE *source = fopen(argv[1],"r");
-		printfile(source);
+		int ret = printfile(source);
+		if(ret == 0) return 0;
 	}
 	else{
 		int i;
 		for(i = 1; i < argc; i++){
 			int pid = fork();
-			if(pid == 0){
+			if(pid == 0){//Falls Fork Kindprozess ist, fuehre Aufgabe durch.
 				FILE *source = fopen(argv[i],"r");
-				printfile(source);
+				int ret = printfile(source);
+				if(ret == 0) return 0;
 				break;
-			}else {
+			}
+			else {//Sonst warte auf Kindprozesse
 				wait(&status);
 			}
 		}
 	}
-	return EXIT_SUCCESS;
+	return 1;
 }
