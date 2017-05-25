@@ -65,16 +65,14 @@
 	
 	\textbf{Interne Fragmentierung} tritt bei fester Speicheraufteilung (fixed partition) auf. Dabei wird Speicher verschwendet, weil die Partitionen ('Speicherschubladen') fest definierter Größe fast nie komplett- und deshalb nur teilweise genutzt werden können. So sind im Hauptspeicher über mehrere Schubladen verstreut unverwendete, unzusammenhängende Speicherabschnitte vorhanden. \textbf{Externe Fragmentierung} tritt dagegen bei dynamischer Partitionierung auf, also wenn der Hauptspeicher in Blöcke dynamischer Größe unteilt wird. Dann können Prozesse Partitionen genau der benötigten Größe erhalten, aber unter Umständen ist der freie Speicher zwischen zwei Prozesspartitionen nicht groß genug, um den vom Prozess benötigten Speicher durchgängig, alloziieren zu können, sodass an einer anderen Stelle alloziiert werden muss.
 	
-	Beide Fälle laufen eine Verschwendung von Speicherplatz hinaus. Dieses Problem kann durch sogenanntes \textbf{Paging} verringert werden: Dabei wird der Speicher in hinreichend kleine Speicherblöcke fixer Größe, den sogenannten Page-Frames unterteilt und der Speicher eines Prozesses kann über mehrere Page-Frames verteilt werden, welche nicht notwendigerweise zusammenhängend sein müssen. Um zu wissen, wo sich die Page-Frames eines Prozesses befinden, verfügt jeder Prozess über eine Page-Table, in der die alloziierten Page-Frames des Prozesses vermerkt sind. Es kann aber immer noch interne Fragmentierung auftreten, nämlich wenn $S \textrm{ mod } P \neq 0$, wobei $S$ der Prozesspeicher und $P$ die fixe Page-Größe ist, d.h. wenn der Prozessspeicher nicht perfekt in eine ganzzahlige Anzahl von Pages passt. Allerdings ist die interne Fragmentierung durch die geringe Speichergröße eines Page-frames begrenzt.
+	Beide Fälle laufen auf eine Verschwendung von Speicherplatz hinaus. Dieses Problem kann durch sogenanntes \textbf{Paging} verringert werden: Dabei wird der Speicher in hinreichend kleine Speicherblöcke fixer Größe, den sogenannten Page-Frames unterteilt und der Speicher eines Prozesses kann über mehrere Page-Frames verteilt werden, welche nicht notwendigerweise zusammenhängend sein müssen. Um zu wissen, wo sich die Page-Frames eines Prozesses befinden, verfügt jeder Prozess über eine Page-Table, in der die alloziierten Page-Frames des Prozesses vermerkt sind. Es kann aber immer noch interne Fragmentierung auftreten, nämlich wenn $S \textrm{ mod } P \neq 0$, wobei $S$ der Prozesspeicher und $P$ die fixe Page-Größe ist, d.h. wenn der Prozessspeicher nicht perfekt in eine ganzzahlige Anzahl von Pages passt. Allerdings ist die interne Fragmentierung durch die geringe Speichergröße eines Page-frames begrenzt.
 	
-	\item Unter der Annahme, dass die Programme nicht als drei Subthreads des gleichen Prozesses, sondern als drei separate Prozesse gestartet werden, müsste jeder Prozess für die $main$-Funktion eine unterschiedliche Adresse zurückgeben, da jeder Prozess eine andere Prozesspartition im Hauptspeicher erhält. Da der Speicher allerdings virtualisiert ist und die Prozesse nur die virtuellen Adressen innerhalb des eigenen Adressraums sehen und nicht etwa die physischen Adressen, ist es naheliegend, dass alle drei Prozesse die gleiche Adresse für die $main$-Funktion zurückgeben.
-	\item [ODER] Grundsätzlich ist es möglich, dass die Ausgabe je nach Betriebssystem (OS) unterschiedlich ist. Das hängt davon ab, ob das OS main-Funktion in den Standart-Bibliotheken vorhält, die nur einmal im Hauptspeicher vorgehalten werden. Dies wird allerdings bei fast allen Betriebssystemen der Fall sein. In diesem Fall wird dreimal die identische dynamische Adresse der main-Funktion ausgegeben. Zusätzlich wird unter Ubuntu Linux die Prozess-IDs der beiden Prozesse ausgegeben, die vom aufrufenden Prozess abgespalten wurden.
+	\item Grundsätzlich ist es möglich, dass die Ausgabe je nach Betriebssystem (OS) unterschiedlich ist. Das hängt davon ab, ob das OS main-Funktion in den Standart-Bibliotheken vorhält, die nur einmal im Hauptspeicher vorgehalten werden. Dies wird allerdings bei fast allen Betriebssystemen der Fall sein. In diesem Fall wird dreimal die identische dynamische Adresse der main-Funktion ausgegeben. Zusätzlich wird unter Ubuntu Linux die Prozess-IDs der beiden Prozesse ausgegeben, die vom aufrufenden Prozess abgespalten wurden.
 	
 \end{enumerate}
 
-
-
 \section*{Aufgabe 2}
+\subsection*{Code}
 
 \inputmintedframed{c}{memmanage.h}
 
@@ -82,7 +80,6 @@
 
 \inputmintedframed{c}{testMemManage.c}
 
-\section{Aufgabe 2}
 \subsection*{4 Sonderfälle}
 Folgende Sonderfälle sind insbesondere bei der Neubelegung freigegebener Speicherknoten zu berücksichtigen:
 \begin{enumerate}
