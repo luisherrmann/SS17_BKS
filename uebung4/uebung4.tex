@@ -51,7 +51,14 @@
 		\item Ein \textbf{Adressraum} bezeichnet eine Menge an Speicheradressen in einem Speicher, welche referenziert werden können.
 	\end{enumerate}
 	
-	\item 
+	\item \textbf{Externe und interne Fragmentierung / Paging}
+		\begin{enumerate}
+			\item \textbf{Interne Fragmentierung} tritt bei fester Speicheraufteilung (fixed partition) auf. Dabei wird Speicher verschwendet, weil die Speicherbereiche fest definierter Größe fast nie komplett genutzt werden können. Der Rest der Speicherzellen in dem festen Speicherbereich bleibt ungenutzt. Im Beispiel aus der Vorlesung wurde Speicher im Hauptspeicher für Prozesse mit unterschiedlichem Speicherbedarf angefordert. In fast allen Fällen bleibt ungenutzter Speicher im zugeordneten Speicherbereich übrig, der mindestens solange nicht verwendet werden kann, wie der Speicherbereich für den Prozess nicht wieder freigegeben wird.
+			 
+			\item \textbf{Externe Fragmentierung} bei dynamischer Speicheraufteilung (dynamic partionions) verschwendet Speicher, weil die leeren Speicherbereiche an verschiedenen Stellen im Speicher stehen und keinen zusammenhängenden Speicherbereich ergeben, der sinnvollerweise neu genutzt werden könnte. Die Nutzung von nicht-zusammenhängenden Speicherbereichen ist für das Betriebssystem aufwendig. Im Beispiel aus der Vorlesung blieben nach dem Austauschen verschiedener Speicherbereiche für Prozesse fast immer an verschiedenen Stellen kleine, ungenutzte Speicherbereiche übrig. Diese können zwar theoretisch neu belegt werden, allerdings sind sie für die Speicherbereiche der meisten Prozesse zu klein.
+			\item Bei \textbf{Paging} wird der Speicher in viele, kleine Seitenrahmen (page-frames) gleicher Speichergröße aufgeteilt. Der Speicher eines Prozesses wird in Seiten (Pages) gleicher Speichergröße aufgeteilt. Eine Seite des Prozesses wird einem Seitenrahmen des Speichers zugeordnet. Das Betriebssystem hält für jeden Prozess eine Tabelle (page table) vor, die Seitenrahmen des Speichers den Seiten des Prozesses zuordnet. Die Verwaltung der Tabelle findet in der MMU statt. So kann externe Fragmentierung verhindert werden, weil alle Seitenrahmen des Speichers für Seiten der Prozesse verwendet werden können. Interne Fragmentierung bleibt möglich, allerdings nur in einem Seitenrahmen pro Prozess. Da die Seitenrahmen sehr klein sind, ist der Speicherverlust ebenfalls sehr klein.
+				
+		\end{enumerate}
 	
 	\item
 	
@@ -64,6 +71,6 @@ Folgende Sonderfälle sind insbesondere bei der Neubelegung freigegebener Speich
 	\item Bei der Anforderung eines Speicherbereichs innerhalb eines größeren, dereferenzierten Speicherknoten muss der restliche Speicher als neuer, dereferenzierter Speicherknoten abgespalten werden.
 	\item Wenn der neue, dereferenzierte Speicherbereich zwischen zwei Knoten zu klein für einen neuen Speicherknoten ist, muss der Speicherbereich des vorherigen Knotens um die Differenz größer ausfallen, als angefordert.
 \end{enumerate}
-Alle diese Sonderfälle wurden in unserem Programm berücksichtigt.
+Alle diese Sonderfälle wurden in unserem Programm berücksichtigt. Die memory\_allocate()-Funktion geht dabei nach einem First-Fit Algorithmus vor.
 	
 \end{document}
