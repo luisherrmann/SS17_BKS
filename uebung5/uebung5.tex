@@ -1,0 +1,70 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{minted}
+\usepackage{mdframed}
+\usepackage{courier}
+\usepackage{hyperref}
+
+\begin{document}
+	
+	\definecolor{bg}{RGB}{230,230,230}
+	\newcommand{\inputmintedframed}[2]{
+		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+			\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
+	
+	\hrulefill
+	\begin{center}
+		\bfseries % Fettdruck einschalten
+		\sffamily % Serifenlose Schrift
+		\begin{huge}
+			Betriebs- und Kommunikationssysteme
+		\end{huge}\\
+		\begin{Large}
+			Sommersemester 2017, 5. Übungsblatt
+		\end{Large}\\
+		\begin{small}
+			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
+		\end{small}
+		
+		\vspace{-10pt}
+	\end{center}
+	\hrulefill
+	
+\section{Aufgabe 1}
+\begin{tabular}{lcccc}
+	Zeitpunkt & P1 & P2 & P3 & P4 \\
+	0 & new & - & - & - \\
+	1 & running & new & - & - \\
+	2 & running & ready  & new & - \\
+	3 & running & ready & ready & new \\
+	4 & running & ready & ready & ready \\
+	5 & waiting & running & ready & ready \\
+	6 & waiting & running & ready & ready \\
+	7 & waiting & killed & running & ready \\
+	8 & waiting & killed & blocked & running \\
+	9 & waiting & killed & blocked & running \\
+	10 & ready & killed & ready & running \\
+	11 & ready & killed & ready & running \\
+	12 & ready & killed & ready & running \\
+	13 & ready & killed & ready & terminated \\
+	14 & running & killed & waiting & terminated \\
+	15 & running & killed & waiting & terminated \\
+	16 & running & killed & waiting & terminated \\
+	17 & running & killed & waiting & terminated \\
+	18 & terminated & killed & waiting & terminated \\
+	19 & terminated & killed & running & terminated \\
+	20 & terminated & killed & running & terminated \\
+	21 & terminated & killed & running & terminated \\
+	22 & terminated & killed & terminated & terminated \\
+
+
+
+\end{tabular}	
+\section{Aufgabe 2}
+	
+\end{document}
