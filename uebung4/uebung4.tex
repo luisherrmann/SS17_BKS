@@ -1,0 +1,60 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{minted}
+\usepackage{mdframed}
+\usepackage{courier}
+\usepackage{hyperref}
+
+\begin{document}
+	
+	\definecolor{bg}{RGB}{230,230,230}
+	\newcommand{\inputmintedframed}[2]{
+		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+			\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
+	
+	\hrulefill
+	\begin{center}
+		\bfseries % Fettdruck einschalten
+		\sffamily % Serifenlose Schrift
+		\begin{huge}
+			Betriebs- und Kommunikationssysteme
+		\end{huge}\\
+		\begin{Large}
+			Sommersemester 2017, 3. Übungsblatt
+		\end{Large}\\
+		\begin{small}
+			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
+		\end{small}
+		
+		\vspace{-10pt}
+	\end{center}
+	\hrulefill
+	
+\section{Aufgabe 1}
+\begin{enumerate}[1.]
+	\item \begin{enumerate}[a)]
+		\item \textbf{Thrashing} bezeichnet ein Problem, das bei Speicherverwaltungen typischerweise auftritt, wenn viele Prozesse gleichzeitig in den Speicher geladen werden müssen, sodass Page Segments von Prozessen häufig geswappt, d.h. aus dem Speicher entfernt werden. Dabei kann der Swap unmittelbar bevor der Prozess gebraucht wird erfolgen, sodass der Page Segment sofort wieder angelegt werden muss und unnötige Lese-/Schreibzugriffe erfolgen.
+		
+		\item Um virtuellen Speicher zu verwalten bietet sich die Verwendung eines \textbf{Transaction Lookaside Buffer} (TLB) an, welcher als Cache für kürzlich ermittelte physische Speicheradressen dient, da diese unter Annahme von Lokalität mit hoher Wahrscheinlichkeit unmittelbar nach dem erstem Aufruf erneut aufgerufen werden und dank Caching die virtuelle Adresse nicht jedes Mal unter Rechenaufwand neu auf eine physische Adresse abgebildet werden muss, sondern direkt in dem TLB abgerufen werden kann.
+		
+		\item Die \textbf{Memory Management Unit} (MMU) ist eine Hardwareeinheit des Prozessors, welche die Funktion eines Hardware-Supports für Speicherverwaltung, inbesondere für Paging und Speichervirtualisierung erfüllt und u.a. die Abbildung von virtuellen Adressen in physische Speicheradressen vornimmt.
+		
+		\item Eine \textbf{physikalische Adresse} bezeichnet eine Speicheradresse, welche als Bezeichner für eine auf einem physisch vorhandenen Speicher (z.B. RAM) vorhandenen Speicherstelle dient.
+		
+		\item \textbf{Logische/virtuelle Adressen} führen eine zusätzliche Abstraktionsebene ein, welche für den Nutzer die Speicheradressierung vereinfacht, da im virtuellen Adressraum des Speichers keine interne Fragmentierung existiert und Prozesse zusammenhängende Adressräume haben, wobei die virtuellen Adressen natürlich auf tatsächliche, physische Adressen verweisen, die Zuweisung aber für den Benutzer unsichtbar durch die Speicherverwaltung des Betriebssystems durchgeführt wird.
+		
+		\item Ein \textbf{Adressraum} bezeichnet eine Menge an Speicheradressen in einem Speicher, welche referenziert werden können.
+	\end{enumerate}
+	
+	\item 
+	
+	\item
+	
+\end{enumerate}
+	
+\end{document}
