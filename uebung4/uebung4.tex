@@ -56,5 +56,14 @@
 	\item
 	
 \end{enumerate}
+\section{Aufgabe 2}
+\subsection*{4}
+Folgende Sonderfälle sind insbesondere bei der Neubelegung freigegebener Speicherknoten zu berücksichtigen:
+\begin{enumerate}
+	\item Zusammenhängende, dereferenzierte Speicherknoten müssen zusammengefügt werden.
+	\item Bei der Anforderung eines Speicherbereichs innerhalb eines größeren, dereferenzierten Speicherknoten muss der restliche Speicher als neuer, dereferenzierter Speicherknoten abgespalten werden.
+	\item Wenn der neue, dereferenzierte Speicherbereich zwischen zwei Knoten zu klein für einen neuen Speicherknoten ist, muss der Speicherbereich des vorherigen Knotens um die Differenz größer ausfallen, als angefordert.
+\end{enumerate}
+Alle diese Sonderfälle wurden in unserem Programm berücksichtigt.
 	
 \end{document}
