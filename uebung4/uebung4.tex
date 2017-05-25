@@ -35,7 +35,7 @@
 	\end{center}
 	\hrulefill
 	
-\section{Aufgabe 1}
+\section*{Aufgabe 1}
 \begin{enumerate}[1.]
 	\item \begin{enumerate}[a)]
 		\item \textbf{Thrashing} bezeichnet ein Problem, das bei Speicherverwaltungen typischerweise auftritt, wenn viele Prozesse gleichzeitig in den Speicher geladen werden müssen, sodass Page Segments von Prozessen häufig geswappt, d.h. aus dem Speicher entfernt werden. Dabei kann der Swap unmittelbar bevor der Prozess gebraucht wird erfolgen, sodass der Page Segment sofort wieder angelegt werden muss und unnötige Lese-/Schreibzugriffe erfolgen.
@@ -51,19 +51,37 @@
 		\item Ein \textbf{Adressraum} bezeichnet eine Menge an Speicheradressen in einem Speicher, welche referenziert werden können.
 	\end{enumerate}
 	
-	\item \textbf{Externe und interne Fragmentierung / Paging}
-		\begin{enumerate}
-			\item \textbf{Interne Fragmentierung} tritt bei fester Speicheraufteilung (fixed partition) auf. Dabei wird Speicher verschwendet, weil die Speicherbereiche fest definierter Größe fast nie komplett genutzt werden können. Der Rest der Speicherzellen in dem festen Speicherbereich bleibt ungenutzt. Im Beispiel aus der Vorlesung wurde Speicher im Hauptspeicher für Prozesse mit unterschiedlichem Speicherbedarf angefordert. In fast allen Fällen bleibt ungenutzter Speicher im zugeordneten Speicherbereich übrig, der mindestens solange nicht verwendet werden kann, wie der Speicherbereich für den Prozess nicht wieder freigegeben wird.
-			 
-			\item \textbf{Externe Fragmentierung} bei dynamischer Speicheraufteilung (dynamic partionions) verschwendet Speicher, weil die leeren Speicherbereiche an verschiedenen Stellen im Speicher stehen und keinen zusammenhängenden Speicherbereich ergeben, der sinnvollerweise neu genutzt werden könnte. Die Nutzung von nicht-zusammenhängenden Speicherbereichen ist für das Betriebssystem aufwendig. Im Beispiel aus der Vorlesung blieben nach dem Austauschen verschiedener Speicherbereiche für Prozesse fast immer an verschiedenen Stellen kleine, ungenutzte Speicherbereiche übrig. Diese können zwar theoretisch neu belegt werden, allerdings sind sie für die Speicherbereiche der meisten Prozesse zu klein.
-			\item Bei \textbf{Paging} wird der Speicher in viele, kleine Seitenrahmen (page-frames) gleicher Speichergröße aufgeteilt. Der Speicher eines Prozesses wird in Seiten (Pages) gleicher Speichergröße aufgeteilt. Eine Seite des Prozesses wird einem Seitenrahmen des Speichers zugeordnet. Das Betriebssystem hält für jeden Prozess eine Tabelle (page table) vor, die Seitenrahmen des Speichers den Seiten des Prozesses zuordnet. Die Verwaltung der Tabelle findet in der MMU statt. So kann externe Fragmentierung verhindert werden, weil alle Seitenrahmen des Speichers für Seiten der Prozesse verwendet werden können. Interne Fragmentierung bleibt möglich, allerdings nur in einem Seitenrahmen pro Prozess. Da die Seitenrahmen sehr klein sind, ist der Speicherverlust ebenfalls sehr klein.
-				
-		\end{enumerate}
-	
-	\item Grundsätzlich ist es möglich, dass die Ausgabe je nach Betriebssystem (OS) unterschiedlich ist. Das hängt davon ab, ob das OS main-Funktion in den Standart-Bibliotheken vorhält, die nur einmal im Hauptspeicher vorgehalten werden. Dies wird allerdings bei fast allen Betriebssystemen der Fall sein. In diesem Fall wird dreimal die identische dynamische Adresse der main-Funktion ausgegeben. Zusätzlich wird unter Ubuntu Linux die Prozess-IDs der beiden Prozesse ausgegeben, die vom aufrufenden Prozess abgespalten wurden.
 
+	\item Von Fragmentierung spricht man, wenn der freie Speicher im Hauptspeicher nicht zusammenhängend ist. Wenn der freie Speicher innerhalb von Partitionen vorhanden ist, spricht man von interner Fragmentierung, wenn er außerhalb der Partitionen auftritt von externer Fragmenierung. 
+
+%	\item \textbf{Externe und interne Fragmentierung / Paging}
+%		\begin{enumerate}
+%			\item \textbf{Interne Fragmentierung} tritt bei fester Speicheraufteilung (fixed partition) auf. Dabei wird Speicher verschwendet, weil die Speicherbereiche fest definierter Größe fast nie komplett genutzt werden können. Der Rest der Speicherzellen in dem festen Speicherbereich bleibt ungenutzt. Im Beispiel aus der Vorlesung wurde Speicher im Hauptspeicher für Prozesse mit unterschiedlichem Speicherbedarf angefordert. In fast allen Fällen bleibt ungenutzter Speicher im zugeordneten Speicherbereich übrig, der mindestens solange nicht verwendet werden kann, wie der Speicherbereich für den Prozess nicht wieder freigegeben wird.
+			 
+%			\item \textbf{Externe Fragmentierung} bei dynamischer Speicheraufteilung (dynamic partionions) verschwendet Speicher, weil die leeren Speicherbereiche an verschiedenen Stellen im Speicher stehen und keinen zusammenhängenden Speicherbereich ergeben, der sinnvollerweise neu genutzt werden könnte. Die Nutzung von nicht-zusammenhängenden Speicherbereichen ist für das Betriebssystem aufwendig. Im Beispiel aus der Vorlesung blieben nach dem Austauschen verschiedener Speicherbereiche für Prozesse fast immer an verschiedenen Stellen kleine, ungenutzte Speicherbereiche übrig. Diese können zwar theoretisch neu belegt werden, allerdings sind sie für die Speicherbereiche der meisten Prozesse zu klein.
+%			\item Bei \textbf{Paging} wird der Speicher in viele, kleine Seitenrahmen (page-frames) gleicher Speichergröße aufgeteilt. Der Speicher eines Prozesses wird in Seiten (Pages) gleicher Speichergröße aufgeteilt. Eine Seite des Prozesses wird einem Seitenrahmen des Speichers zugeordnet. Das Betriebssystem hält für jeden Prozess eine Tabelle (page table) vor, die Seitenrahmen des Speichers den Seiten des Prozesses zuordnet. Die Verwaltung der Tabelle findet in der MMU statt. So kann externe Fragmentierung verhindert werden, weil alle Seitenrahmen des Speichers für Seiten der Prozesse verwendet werden können. Interne Fragmentierung bleibt möglich, allerdings nur in einem Seitenrahmen pro Prozess. Da die Seitenrahmen sehr klein sind, ist der Speicherverlust ebenfalls sehr klein.
+				
+%		\end{enumerate}
+	
+	\textbf{Interne Fragmentierung} tritt bei fester Speicheraufteilung (fixed partition) auf. Dabei wird Speicher verschwendet, weil die Partitionen ('Speicherschubladen') fest definierter Größe fast nie komplett- und deshalb nur teilweise genutzt werden können. So sind im Hauptspeicher über mehrere Schubladen verstreut unverwendete, unzusammenhängende Speicherabschnitte vorhanden. \textbf{Externe Fragmentierung} tritt dagegen bei dynamischer Partitionierung auf, also wenn der Hauptspeicher in Blöcke dynamischer Größe unteilt wird. Dann können Prozesse Partitionen genau der benötigten Größe erhalten, aber unter Umständen ist der freie Speicher zwischen zwei Prozesspartitionen nicht groß genug, um den vom Prozess benötigten Speicher durchgängig, alloziieren zu können, sodass an einer anderen Stelle alloziiert werden muss.
+	
+	Beide Fälle laufen eine Verschwendung von Speicherplatz hinaus. Dieses Problem kann durch sogenanntes \textbf{Paging} verringert werden: Dabei wird der Speicher in hinreichend kleine Speicherblöcke fixer Größe, den sogenannten Page-Frames unterteilt und der Speicher eines Prozesses kann über mehrere Page-Frames verteilt werden, welche nicht notwendigerweise zusammenhängend sein müssen. Um zu wissen, wo sich die Page-Frames eines Prozesses befinden, verfügt jeder Prozess über eine Page-Table, in der die alloziierten Page-Frames des Prozesses vermerkt sind. Es kann aber immer noch interne Fragmentierung auftreten, nämlich wenn $S \textrm{ mod } P \neq 0$, wobei $S$ der Prozesspeicher und $P$ die fixe Page-Größe ist, d.h. wenn der Prozessspeicher nicht perfekt in eine ganzzahlige Anzahl von Pages passt. Allerdings ist die interne Fragmentierung durch die geringe Speichergröße eines Page-frames begrenzt.
+	
+	\item Unter der Annahme, dass die Programme nicht als drei Subthreads des gleichen Prozesses, sondern als drei separate Prozesse gestartet werden, müsste jeder Prozess für die $main$-Funktion eine unterschiedliche Adresse zurückgeben, da jeder Prozess eine andere Prozesspartition im Hauptspeicher erhält. Da der Speicher allerdings virtualisiert ist und die Prozesse nur die virtuellen Adressen innerhalb des eigenen Adressraums sehen und nicht etwa die physischen Adressen, ist es naheliegend, dass alle drei Prozesse die gleiche Adresse für die $main$-Funktion zurückgeben.
+	\item [ODER] Grundsätzlich ist es möglich, dass die Ausgabe je nach Betriebssystem (OS) unterschiedlich ist. Das hängt davon ab, ob das OS main-Funktion in den Standart-Bibliotheken vorhält, die nur einmal im Hauptspeicher vorgehalten werden. Dies wird allerdings bei fast allen Betriebssystemen der Fall sein. In diesem Fall wird dreimal die identische dynamische Adresse der main-Funktion ausgegeben. Zusätzlich wird unter Ubuntu Linux die Prozess-IDs der beiden Prozesse ausgegeben, die vom aufrufenden Prozess abgespalten wurden.
 	
 \end{enumerate}
+
+
+
+\section*{Aufgabe 2}
+
+\inputmintedframed{c}{memmanage.h}
+
+\inputmintedframed{c}{memoryManagement.c}
+
+\inputmintedframed{c}{testMemManage.c}
+
 \section{Aufgabe 2}
 \subsection*{4 Sonderfälle}
 Folgende Sonderfälle sind insbesondere bei der Neubelegung freigegebener Speicherknoten zu berücksichtigen:
