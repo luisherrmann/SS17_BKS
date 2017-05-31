@@ -35,7 +35,11 @@
 	\end{center}
 	\hrulefill
 	
-\section{Aufgabe 1}
+\section*{Aufgabe 1}
+Es handelt sich bei First-Come-First-Served (FCFS)um einen non-preemptive Scheduling Algorithmus. Deshalb greift der Scheduler nicht aktiv in die Ausführung eines laufenden Prozesse ein. Jeder Prozess kann sich nur selbst schlafen legen.\\\\
+Annahme:\\
+Prozesse im Zustand ''blocked'' versuchen aktiv auf eine fremdbelegte Ressource zuzugreifen und legen sich nicht schlafen. Da es sich bei FCFS um einen non-preemptive Scheduling Algorithmus handelt, greift der Scheduler nicht ein.  \\
+\subsection*{a)}
 \begin{tabular}{lcccc}
 	Zeitpunkt & P1 & P2 & P3 & P4 \\
 	0 & new & - & - & - \\
@@ -46,24 +50,29 @@
 	5 & waiting & running & ready & ready \\
 	6 & waiting & running & ready & ready \\
 	7 & waiting & killed & running & ready \\
-	8 & waiting & killed & blocked & running \\
-	9 & waiting & killed & blocked & running \\
-	10 & ready & killed & ready & running \\
-	11 & ready & killed & ready & running \\
-	12 & ready & killed & ready & running \\
-	13 & running & killed & waiting & terminated \\
-	14 & running & killed & waiting & terminated \\
-	15 & running & killed & waiting & terminated \\
-	16 & running & killed & waiting & terminated \\
-	17 & terminated & killed & waiting & terminated \\
-	18 & terminated & killed & running & terminated \\
+	8 & waiting & killed & blocked & ready \\
+	9 & waiting & killed & blocked & ready \\
+	10 & ready & killed & waiting & running \\
+	11 & ready & killed & waiting & running \\
+	12 & ready & killed & waiting & running \\
+	13 & ready & killed & waiting & running \\
+	14 & ready & killed & waiting & running \\
+	15 & running & killed & ready & terminated \\
+	16 & running & killed & ready & terminated \\
+	17 & running & killed & ready & terminated \\
+	18 & running & killed & ready & terminated \\
 	19 & terminated & killed & running & terminated \\
 	20 & terminated & killed & running & terminated \\
-	21 & terminated & killed & terminated & terminated \\
+	21 & terminated & killed & running & terminated \\
+	22 & terminated & killed & terminated & terminated \\
 	
-
-
 \end{tabular}	
+\subsection*{b)}
+Das System befindet sich zum Zeitpunkt 8 und zum Zeitpunkt 9 im Zustand busy waiting, da P3 aktiv auf den Drucker wartet.
+\subsection*{c)}
+Der Abbruch eines Prozesses kann in verschiedenen Fällen sinnvoll sein. Für das Betriebssystem ist es aus Sicherheitsgründen sinnvoll einen Prozess abzubrechen, der auf Speicherbereiche zugreifen will, die ihm nicht gehören. Der Abbruch eines Prozesses durch eine*n Benutzer*in kann sinnvoll sein, wenn ein Prozess nicht mehr reagiert und sich deshalb auch nicht mehr sinnvoll beenden lässt. \\\\
+Im Betriebssystem Unix kann mensch sich mit dem Shell-Befehl ''top'' eine Liste der aktiven Prozesse anzeigen lassen. Ein Prozess kann hier mit Eingabe von ''k'' (für ''kill'') und der ProcessID (PID) abgebrochen werden. 
 \section{Aufgabe 2}
-	
+\subsection{b}
+Testfile kopieren und abändern.
 \end{document}
