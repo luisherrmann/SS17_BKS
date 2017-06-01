@@ -8,6 +8,8 @@
 \usepackage{mdframed}
 \usepackage{courier}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 \begin{document}
 	
@@ -73,6 +75,41 @@ Das System befindet sich zum Zeitpunkt 8 und zum Zeitpunkt 9 im Zustand busy wai
 Der Abbruch eines Prozesses kann in verschiedenen Fällen sinnvoll sein. Für das Betriebssystem ist es aus Sicherheitsgründen sinnvoll einen Prozess abzubrechen, der auf Speicherbereiche zugreifen will, die ihm nicht gehören. Der Abbruch eines Prozesses durch eine*n Benutzer*in kann sinnvoll sein, wenn ein Prozess nicht mehr reagiert und sich deshalb auch nicht mehr sinnvoll beenden lässt. \\\\
 Im Betriebssystem Unix kann mensch sich mit dem Shell-Befehl ''top'' eine Liste der aktiven Prozesse anzeigen lassen. Ein Prozess kann hier mit Eingabe von ''k'' (für ''kill'') und der ProcessID (PID) abgebrochen werden. 
 \section{Aufgabe 2}
+\subsection{a}
+
+\inputmintedframed{c}{scheduler.c}
+
 \subsection{b}
-Testfile kopieren und abändern.
+
+Zwecks Testen unserer Scheduler haben wir das File \textit{sched\_test.c} leicht abgewandelt, sodass nun auch mehrere Tests durchgeführt werden können. Die ursprüngliche \textit{main} haben wir in die void-Funktion \textit{runtests} ausgelagert, welche nun als Paremeters ein 2D-\textit{uint64\_t}-Array erhält, in dem die auszuführenden Prozess spezifiziert sind. Die eigentliche Definition der Tests finden und die Aufrufe von \textit{runtests()} finden in \textit{main()} statt. Dabei ist die Anwendung interaktiv gestaltet, sodass der Nutzer den Test seiner Wahl ausführen kann.
+
+\inputmintedframed{c}{sched_tests.c}
+
+Für den Standard-Test erhält man das interessante Resultat, dass die Ausführung für die drei nichtpräventiven Scheduling-Algorithmen (FCFS, SPN, HRRN) gleich aussieht.\\
+
+Der zweite Test wurde von der Vorlesung übernommen. Es ergeben sich genau die in den Folien gezeigten Reihenfolgen:\\
+
+\begin{minipage}{0.8 \textwidth}
+\includegraphics[width=\textwidth]{rr.pdf}
+\end{minipage}
+\newline
+
+\begin{minipage}{0.8 \textwidth}
+\includegraphics[width=\textwidth]{fcfs.pdf}
+\end{minipage}
+\newline
+
+\begin{minipage}{0.8 \textwidth}
+\includegraphics[width=\textwidth]{rr.pdf}
+\end{minipage}
+\newline
+
+\begin{minipage}{0.8 \textwidth}
+\includegraphics[width=\textwidth]{fcfs.pdf}
+\end{minipage}
+\newline
+
+Bei unserem 3. Test kommen alle Prozesse (theoretisch) zur gleichen Zeit in die Queue und haben auch die gleichen voraussichtlichen Ausführungzeiten. Bei Round-Robin ergibt sich die übliche geschachtelte Ausführung, während sich für die nicht-präventiven Scheduling-Algorithmen wieder die drei gleichen Ausführungsreihenfolgen ergeben und zwar derart, dass die Prozesse in ihrere Reihenfolge in der Prozessliste abgearbeitet werden. Für FCFS ist das klar, denn FCFS wählt einfach den ersten Prozess aus der Prozessliste, der noch zu absolvierenden Zyklen hat. Für SPN und HRRN ebenso, denn die Scores zur Auswahl der Prozesse sind bei allen Prozessen der Liste gleich, die Prozessliste wird von vorne nach hinten iteriert und sofern kein Prozess mit noch auszuführenden Zyklen gefunden wird, der einen niedrigeren, bzw. höheren Score erzielt, wird der aktuell zur Ausführung ausgewählte Prozess beibehalten. Das führt aber gerade zur FCFS-Ausführungreihenfolge.
+
+
 \end{document}
