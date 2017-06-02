@@ -8,9 +8,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <dirent.h>
+#include <stdbool.h>
 
-
-int listFiles(char *dirname){
+int listFiles(char *dirname, bool showInvisible){
 	DIR *dir = opendir(dirname);
 	struct dirent *dirent = readdir(dir);
 	while (dirent != NULL){
@@ -18,7 +18,8 @@ int listFiles(char *dirname){
 		off_t sizeT;
 		char* filename = dirent->d_name;		
 		if (stat(filename,&st)==0) sizeT=st.st_size;
-		printf("%s\t\t%li Byte\n",filename,sizeT);
+		if (filename[0]!='.' || showInvisible)
+			printf("%s\t\t%li Byte\n",filename,sizeT);
 		dirent = readdir(dir);
 	}	
 	closedir(dir);	
@@ -31,8 +32,20 @@ int main(int argc, char *argv[]){
 		write(STDERR_FILENO,message,sizeof(message));
 		return EXIT_FAILURE;
 	}else if (argc==1){
-		listFiles("./");
+		listFiles("./", false);
 	}
+	if (argc == 2){
+		if (argv[1][0] == '-'){
+		switch(argv[1][1]){
+			case 'a': listFiles("./", true);break;
+			case 'l': break;
+		}}else {
+			char tempPath[] = "./";
+			strcat(tempPath,argv[1]);
+			listFiles(tempPath,false);
+		}
+	}
+	
 
 	
 		
