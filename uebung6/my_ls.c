@@ -13,10 +13,11 @@
 #include <stdbool.h>
 
 extern int64_t strToInt(const char*, char**, uint8_t);
+extern void sort(uint64_t len, int64_t a[len]);
 
 char* end = NULL;
 struct linkedFileInfoList *headP = NULL;
-int fileCounter = 0;
+uint64_t fileCounter = 0;
 
 struct linkedFileInfoList{
 	const char *filename;
@@ -86,17 +87,29 @@ int printLinkedFileInfoList(){
 	return EXIT_SUCCESS;
 
 }
-int64_t * createSortableArray(){
-	int64_t curArray[fileCounter];// = malloc(fileCounter*sizeof(int64_t));
+int64_t *curArray;
+int createSortableArray(){
+	curArray = (int64_t *)malloc(fileCounter*sizeof(int64_t));
 	struct linkedFileInfoList *curNode = headP;
-	for (int i = 0; i<fileCounter;i++){
+	for (uint64_t i = 0; i<fileCounter;i++){
 		curArray[i]=curNode->sortValue;
 		printf("curArray[i] = %"PRIu64"\n",curArray[i]);
 		curNode=curNode->next;
 	}
-	return curArray;
-}
+	return EXIT_SUCCESS;
 
+}
+static inline void printArray(int64_t* to_show, uint64_t len) {
+	for(uint64_t i=0; i<len; i++) {
+		if(i == 0) { // erstes Element
+			printf("Array: %"PRId64", ", to_show[i]);
+		} else if(i == (len-1)) { // letztes Element
+			printf("%"PRId64"\n", to_show[i]);
+		} else {
+			printf("%"PRId64", ", to_show[i]);
+		}
+	}
+}
 
 int main(int argc, char *argv[]){
 	if (argc > 3){
@@ -107,6 +120,10 @@ int main(int argc, char *argv[]){
 		initLinkedList("./",false);
 		printLinkedFileInfoList();
 		createSortableArray();
+		printArray(curArray,fileCounter);
+		sort(fileCounter,curArray);
+		printArray(curArray,fileCounter);
+
 	}
 	if (argc == 2){
 		if (argv[1][0] == '-'){
