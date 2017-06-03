@@ -1,4 +1,5 @@
 #include <sys/types.h>
+
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -8,46 +9,116 @@
 #include <string.h>
 #include <stdio.h>
 #include <dirent.h>
+
 #include <stdbool.h>
 
-int listFiles(char *dirname, bool showInvisible){
+extern int64_t strToInt(const char*, char**, uint8_t);
+
+char* end = NULL;
+struct linkedFileInfoList *headP = NULL;
+int fileCounter = 0;
+
+struct linkedFileInfoList{
+	const char *filename;
+	struct stat st;
+	int64_t sortValue;
+	long int dirPos;
+	struct linkedFileInfoList *next;
+};
+int64_t getSortValue(const char *filename){
+	int64_t tempIlast= strToInt(filename,&end,(uint64_t)36);
+	int64_t curI=tempIlast;
+	while (curI>=tempIlast){
+		tempIlast=curI;
+		curI*=36;
+	}
+	return tempIlast;
+}
+struct linkedFileInfoList *newLinkedFileInfoList(struct dirent *dirent, DIR *dir){
+	struct linkedFileInfoList *new = malloc(sizeof(struct linkedFileInfoList));
+	struct stat stS;
+	stat(dirent->d_name,&stS);
+	
+	new->st = stS;
+	new->filename = dirent->d_name;
+
+	new->dirPos = telldir(dir);
+	new->sortValue = getSortValue(new->filename);
+	
+	
+	printf("File: %s \t SortValue:%"PRIu64"\n",new->filename,new->sortValue);
+	new->next = NULL;	
+	return new;
+}
+
+int initLinkedList(char *dirname, bool showInvisible){
 	DIR *dir = opendir(dirname);
 	struct dirent *dirent = readdir(dir);
+	struct linkedFileInfoList *curNode = headP;
+	struct linkedFileInfoList *lastNode = NULL;
 	while (dirent != NULL){
-		struct stat st;
-		off_t sizeT;
-		char* filename = dirent->d_name;		
-		if (stat(filename,&st)==0) sizeT=st.st_size;
-		if (filename[0]!='.' || showInvisible)
-			printf("%s\t\t%li Byte\n",filename,sizeT);
+		
+		if (*dirent->d_name!='.' || showInvisible){
+			curNode = newLinkedFileInfoList(dirent,dir);
+			if (headP == NULL)  {headP=curNode; }
+			else {lastNode->next = curNode;}
+			lastNode = curNode;
+			fileCounter++;
+		}
+
 		dirent = readdir(dir);
 	}	
 	closedir(dir);	
 	return 0;
 }
-int main(int argc, char *argv[]){
+int printLinkedFileInfoList(){
+	if (headP == NULL) {
+		printf("HeadP == NULL\n");	
+		return -1;
+	}
+	struct linkedFileInfoList *curNode = headP;
+	while (curNode != NULL){
+		printf("%s\t\t\t\t%li Byte\n",curNode->filename,curNode->st.st_size);
 
+		
+		curNode=curNode->next;	
+	}
+	return EXIT_SUCCESS;
+
+}
+int64_t * createSortableArray(){
+	int64_t curArray[fileCounter];// = malloc(fileCounter*sizeof(int64_t));
+	struct linkedFileInfoList *curNode = headP;
+	for (int i = 0; i<fileCounter;i++){
+		curArray[i]=curNode->sortValue;
+		printf("curArray[i] = %"PRIu64"\n",curArray[i]);
+		curNode=curNode->next;
+	}
+	return curArray;
+}
+
+
+int main(int argc, char *argv[]){
 	if (argc > 3){
 		const char message[] ="Zu viele Parameter für my_ls.\n";
 		write(STDERR_FILENO,message,sizeof(message));
 		return EXIT_FAILURE;
 	}else if (argc==1){
-		listFiles("./", false);
+		initLinkedList("./",false);
+		printLinkedFileInfoList();
+		createSortableArray();
 	}
 	if (argc == 2){
 		if (argv[1][0] == '-'){
 		switch(argv[1][1]){
-			case 'a': listFiles("./", true);break;
+			case 'a': initLinkedList("./", true); printLinkedFileInfoList(); break;
 			case 'l': break;
 		}}else {
 			char tempPath[] = "./";
 			strcat(tempPath,argv[1]);
-			listFiles(tempPath,false);
+			initLinkedList("./",false);
+			printLinkedFileInfoList();
 		}
-	}
-	
-
-	
-		
+	}		
 	return EXIT_SUCCESS;
 }
