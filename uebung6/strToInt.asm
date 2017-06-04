@@ -14,13 +14,15 @@ strToInt:
 	jg endCalc		;Falls r9b (letztes BYTE von RDX) also b > 36, springe zu endCalc
 	cmp r9b,0
 	jle endCalc		;Falls rax also b <= 0, springe zu endCalc
-	mov r8,0			
+	mov r8,0
+	mov rcx,[rsi]			
 	loop:			;Schleife zum Auslesen der einzelnen Stellen					
 		mov r8b, [rdi]	;Lese das nächste BYTE aus dem Speicher aus
-		
+		cmp r8b,cl
+		je endCalc	;Ende "Zeichen" wurde gelesen
 		cmp r8b,0
 		je endCalc	;Falls die nächste Stelle eine 0 (ASCII NULL) ist, springe zum endCalc
-		
+			
 		number:
 			cmp r8b,48	;48-57 (0-9)
 			jl endCalc	;Falls das BYTE < 48 ist, also keine Ziffer oder Buchstabe, dann springe zu "endCalc"
