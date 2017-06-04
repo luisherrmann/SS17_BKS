@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <dirent.h>
-
+#include <time.h>
 #include <stdbool.h>
 
 extern int64_t strToInt(const char*, char**, uint8_t);
@@ -18,6 +18,7 @@ extern void sort(uint64_t len, int64_t a[len]);
 char* end = NULL;
 struct linkedFileInfoList *headP = NULL;
 uint64_t fileCounter = 0;
+int64_t *curArray;
 
 struct linkedFileInfoList{
 	const char *filename;
@@ -37,17 +38,15 @@ int64_t getSortValue(const char *filename){
 }
 struct linkedFileInfoList *newLinkedFileInfoList(struct dirent *dirent, DIR *dir){
 	struct linkedFileInfoList *new = malloc(sizeof(struct linkedFileInfoList));
-	struct stat stS;
-	stat(dirent->d_name,&stS);
+	struct stat *stS = malloc(sizeof(struct stat));
+	stat(dirent->d_name,stS);
 	
-	new->st = stS;
+	new->st = *stS;
 	new->filename = dirent->d_name;
 
 	new->dirPos = telldir(dir);
 	new->sortValue = getSortValue(new->filename);
 	
-	
-	printf("File: %s \t SortValue:%"PRIu64"\n",new->filename,new->sortValue);
 	new->next = NULL;	
 	return new;
 }
@@ -72,42 +71,57 @@ int initLinkedList(char *dirname, bool showInvisible){
 	closedir(dir);	
 	return 0;
 }
+char *buff;
+char *getStringDate(time_t time){
+    buff=malloc(100); //TODO: dynamisch
+    strftime (buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&time));
+    return buff;
+}
+int printNode(struct linkedFileInfoList *curNode){
+	printf("%-20s %15li Byte \t Modified %s\n",curNode->filename,curNode->st.st_size,getStringDate(curNode->st.st_mtime));
+	return EXIT_SUCCESS;
+}
 int printLinkedFileInfoList(){
 	if (headP == NULL) {
-		printf("HeadP == NULL\n");	
 		return -1;
 	}
 	struct linkedFileInfoList *curNode = headP;
 	while (curNode != NULL){
-		printf("%s\t\t\t\t%li Byte\n",curNode->filename,curNode->st.st_size);
-
-		
+		printNode(curNode);
 		curNode=curNode->next;	
 	}
 	return EXIT_SUCCESS;
 
 }
-int64_t *curArray;
+
 int createSortableArray(){
 	curArray = (int64_t *)malloc(fileCounter*sizeof(int64_t));
 	struct linkedFileInfoList *curNode = headP;
 	for (uint64_t i = 0; i<fileCounter;i++){
 		curArray[i]=curNode->sortValue;
-		printf("curArray[i] = %"PRIu64"\n",curArray[i]);
 		curNode=curNode->next;
 	}
 	return EXIT_SUCCESS;
 
 }
-static inline void printArray(int64_t* to_show, uint64_t len) {
-	for(uint64_t i=0; i<len; i++) {
-		if(i == 0) { // erstes Element
-			printf("Array: %"PRId64", ", to_show[i]);
-		} else if(i == (len-1)) { // letztes Element
-			printf("%"PRId64"\n", to_show[i]);
-		} else {
-			printf("%"PRId64", ", to_show[i]);
-		}
+
+void printSortedLS(){
+	for (uint64_t i=0;i<fileCounter;i++){
+		struct linkedFileInfoList *curNode = headP;
+		struct linkedFileInfoList *lastNode = NULL;
+		while (curNode != NULL){
+			if (curArray[i]==curNode->sortValue){
+				printNode(curNode);
+				if (lastNode==NULL) 
+					headP=curNode->next;
+				else {
+					lastNode->next = curNode->next;				
+				}
+			break;		
+			}
+			lastNode = curNode;
+			curNode = curNode->next;
+		}		
 	}
 }
 
@@ -118,18 +132,23 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}else if (argc==1){
 		initLinkedList("./",false);
+		printf("TEST\n");
+		
 		printLinkedFileInfoList();
-		createSortableArray();
-		printArray(curArray,fileCounter);
-		sort(fileCounter,curArray);
-		printArray(curArray,fileCounter);
+
 
 	}
 	if (argc == 2){
 		if (argv[1][0] == '-'){
 		switch(argv[1][1]){
 			case 'a': initLinkedList("./", true); printLinkedFileInfoList(); break;
-			case 'l': break;
+			case 'l': {
+				initLinkedList("./",false);
+ 				printf("Verzeichnis ./ sortiert:\n");
+				createSortableArray();	
+				sort(fileCounter,curArray);
+				printSortedLS(); 
+				break;}
 		}}else {
 			char tempPath[] = "./";
 			strcat(tempPath,argv[1]);
