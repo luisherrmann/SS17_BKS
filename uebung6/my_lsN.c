@@ -16,6 +16,8 @@ struct linkedFileInfoList *headP = NULL;
 uint64_t fileCounter = 0;
 struct linkedFileInfoList *curArray;
 char curDirName[40] = "./";
+int dirOrFileCounter=1;
+
 
 struct linkedFileInfoList{
 	char filename[40];
@@ -24,7 +26,7 @@ struct linkedFileInfoList{
 	struct linkedFileInfoList *next;
 };
 int initStringDate(char buffTime[], time_t time){
-    struct tm *tempTM;
+    struct tm *tempTM = malloc(sizeof(struct tm));
     tempTM =localtime(&time);
     strftime (buffTime, 20, "%Y-%m-%d %H:%M:%S", tempTM);
     return EXIT_SUCCESS;
@@ -39,13 +41,13 @@ static int cmpLinkedFileInfoListByFilename(const void *a, const void *b)
 
 struct linkedFileInfoList *newLinkedFileInfoList(struct dirent *dirent){
 	struct linkedFileInfoList *new = malloc(sizeof(struct linkedFileInfoList));
-	struct stat stS;
 	strncpy(new->filename,dirent->d_name,40);
-	stat(dirent->d_name,&stS);
-	new->st = stS;
-	char buffTime[20];
-	initStringDate(buffTime, stS.st_mtime);
-	strncpy(new->buffTime,buffTime,20);
+	char relFilePath[80] ="";
+	strcat(relFilePath,curDirName);
+	strcat(relFilePath,"/");
+	strcat(relFilePath,new->filename);
+	stat(relFilePath,&new->st);
+	initStringDate(new->buffTime, new->st.st_mtime);
 	new->next = NULL;	
 	return new;
 }
@@ -56,6 +58,7 @@ int initLinkedList(char *dirname, bool showInvisible){
 	struct linkedFileInfoList *curNode = headP;
 	struct linkedFileInfoList *lastNode = NULL;
 	int pointD = 0;
+	printf("Test\n");
 	while (dirent != NULL){
 		
 		if (dirent->d_name[0]!='.'||showInvisible){
@@ -116,42 +119,35 @@ int printSortedArray(){
 
 
 int main(int argc, char *argv[]){
-/*	if (argc > 3){
-		const char message[] ="Zu viele Parameter für my_ls.\n";
-		write(STDERR_FILENO,message,sizeof(message));
-		return EXIT_FAILURE;
-	}else */
-	if (argc==1){
-		initLinkedList(curDirName,false);
-		printLinkedFileInfoListSimple();
+	int ret=0;
 
-
-	}
 	bool lParam=false;
 	bool aParam=false;
 	for (int i = 1;i<argc;i++){
 		if (argv[i][0]!='-') strncpy(curDirName,argv[i],40);
-		else{
-			for (int j=1;j<=2;j++){
+		else{			
+			for (int j=1;argv[i][j]!='\0';j++){
 				if (argv[i][j]=='l'||argv[i][j]=='L') lParam=true;
-				if (argv[i][j]=='a'||argv[i][j]=='A') aParam=true;
+				else if (argv[i][j]=='a'||argv[i][j]=='A') aParam=true;
+				else ret=2;
 			}		
 		}
 	}
 	if (aParam){
 		initLinkedList(curDirName, true); 
 		if (lParam){
+			printf("Counter:%i\n", fileCounter);
 			createSortableArray();	
 			qsort(&curArray[0],fileCounter,sizeof(struct linkedFileInfoList),cmpLinkedFileInfoListByFilename);
 			printSortedArray();
 		} else 
-			printLinkedFileInfoListSimple(); 
+			printLinkedFileInfoListSimple();
 		
-	}
-	if (lParam){
+	}else if (lParam){
 		bool showInvi=false;
 		if (aParam) showInvi=true;
 		initLinkedList(curDirName,showInvi);
+
  		printf("Verzeichnis ./ sortiert:\n");
 		createSortableArray();	
 		qsort(&curArray[0],fileCounter,sizeof(struct linkedFileInfoList),cmpLinkedFileInfoListByFilename);
@@ -163,6 +159,6 @@ int main(int argc, char *argv[]){
 		initLinkedList(curDirName,false);
 		printLinkedFileInfoListSimple();
 	}
-			
+	printf("return: %i\n",ret);
 	return EXIT_SUCCESS;
 }// Rückgabewerte ordner nicht gefunden -> 1 ; Parameter existiert nicht -> 2
