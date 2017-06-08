@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <stdbool.h>
-
+#include <errno.h>
 
 struct linkedFileInfoList *headP = NULL;
 uint64_t fileCounter = 0;
@@ -52,17 +52,37 @@ struct linkedFileInfoList *newLinkedFileInfoList(struct dirent *dirent){
 	return new;
 }
 
-int initLinkedList(char *dirname, bool showInvisible, bool isFileMode, char argv[], int argc){
+int initLinkedList(char *dirname, bool showInvisible, bool isFileMode, char *argv[], int argc){
 	struct linkedFileInfoList *curNode = headP;	
 	struct linkedFileInfoList *lastNode = NULL;
-	if (!isFileMode){
-		
+	char *tempFileBegin;
+	if (isFileMode){
+	//Sucht den Dateinamen ohne Ordnernamen und trennt den dirname mit einem NULL-Byte ab
+		tempFileBegin = rindex(dirname,'/')+1;
+		tempFileBegin[0]='\0';
 	}
 	DIR *dir = opendir(dirname);
 	struct dirent *dirent = readdir(dir);
 	while (dirent != NULL){
-	
-		if (dirent->d_name[0]!='.'||showInvisible){
+		if (isFileMode){
+			for (int i=1;i<argc;i++){
+				if (argv[i][0]!='-'){
+					tempFileBegin = rindex(argv[i],'/')+1;
+					if (strcmp(tempFileBegin,dirent->d_name)==0){
+						curNode = newLinkedFileInfoList(dirent);
+						if (headP == NULL)  {headP=curNode; }
+						else {lastNode->next = curNode;}
+						lastNode = curNode;
+						fileCounter++;
+						break;
+					}
+				}
+			}
+			dirent=readdir(dir);
+			continue;
+		}
+		
+		if ((dirent->d_name[0]!='.'||showInvisible)){
 
 			curNode = newLinkedFileInfoList(dirent);
 			if (headP == NULL)  {headP=curNode; }
@@ -139,7 +159,7 @@ int main(int argc, char *argv[]){
 	if (countFileParams==1) {
 		DIR *dir= opendir(curDirName);	
 		if (dir == NULL) {
-			if (errno = ENOTDIR) isFileMode = true;
+			if (errno == ENOTDIR) isFileMode = true;
 			else return 1;
 		} else closedir(dir);
 			
@@ -149,7 +169,7 @@ int main(int argc, char *argv[]){
 	} 
 
 	if (aParam&&!isFileMode){
-		initLinkedList(curDirName, true); 
+		initLinkedList(curDirName, true, isFileMode, argv,argc); 
 		if (lParam){
 			printf("Counter:%i\n", fileCounter);
 			createSortableArray();	
@@ -161,7 +181,7 @@ int main(int argc, char *argv[]){
 	}else if (lParam&&!isFileMode){
 		bool showInvi=false;
 		if (aParam) showInvi=true;
-		initLinkedList(curDirName,showInvi);
+		initLinkedList(curDirName,showInvi,isFileMode, argv,argc);
 
  		printf("Verzeichnis ./ sortiert:\n");
 		createSortableArray();	
@@ -171,11 +191,19 @@ int main(int argc, char *argv[]){
 	}
 	if (!aParam && !lParam && !isFileMode){	
 		printf("Open folder:%s\n",curDirName);
-		initLinkedList(curDirName,false);
+		initLinkedList(curDirName,false,isFileMode, argv,argc);
 		printLinkedFileInfoListSimple();
 	}
 	if (isFileMode) {
-		printf("Files!\n");
+		initLinkedList(curDirName,aParam,isFileMode, argv,argc);
+		if (lParam){
+			printf("Counter:%i\n", fileCounter);
+			createSortableArray();	
+			qsort(&curArray[0],fileCounter,sizeof(struct linkedFileInfoList),cmpLinkedFileInfoListByFilename);
+			printSortedArray();
+		} else 
+			printLinkedFileInfoListSimple();
+
 	}
 	printf("return: %i\n",ret);
 	return EXIT_SUCCESS;
