@@ -38,7 +38,7 @@
 	\hrulefill
 	
 \section*{Aufgabe 1}
-\subsection*{a}
+\subsection*{a)}
 \begin{enumerate}
 	\item Über Eingabe- und Ausgabeschnittstellen(E/A engl. Input/Output I/O) interagiert ein Computer über externe Geräte wie Festplatten, Netzwerk-Sockets, Tastatur, Maus Bildschirmen, Druckern etc. mit der Umwelt.\\
 	Als DMA wird ein Speicherdirektzugriff (engl. Direct Memory Access) bezeichnet. Die Daten werden nicht über den Prozessor, sondern über eine eigene Datenleitung (Bus) in den Speicher übertragen, so dass die Ausführung laufender Prozesse von dem Datentransfer nicht direkt beeinträchtigt wird. Der Datentransfer wird von dem DMA-Controller verwaltet.
@@ -48,9 +48,24 @@
 	\item Ein Virtual File System liegt entweder im Kernel zwischen der System-Call Schnittstelle, oder ist als ladbares Modul konstruiert. Es verwaltet alle verschiedenen eingebundenen Dateisysteme und bietet Schnittstellen an.  
 	\item Indexed Allocation ist eine Möglichkeit Dateien auf der Festplatte zu verwalten. Dabei verwaltet eine Tabelle mit Indizes viele Tabellen, die die Speicheradressen der Daten einer einzelnen Datei im Speicher enthalten.
 	\item Inodes sind Informationsblöcke über Dateien auf UNIX-Betriebssystemen. Sie fassen relevante Informationen wie Dateigröße, Rechte und verschiedene Timestamps einer Datei zusammen.
-	 
+	
 	   
 \end{enumerate}
+\subsection*{b)}
+\subsubsection*{NTFS}
+NTFS ist ein proprietäres Dateisystem, dass von Microsoft für alle Betriebssysteme der Windows-NT entwickelt wurde. Im Folgenden werden wir auf einige wichtige Leistungskriterien des NTFS-Dateisystems eingehen.\\ \\
+
+\textbf{Sicherheit}
+NTFS bietet mit Access Control Lists (ACL) eine bequeme Möglichkeit die Zugriffsrechte für Dateien und Ordner über Gruppen und Rollen zu verwalten. Mit BitLocker Drive Encryption unterstützt NTFS Datenverschlüsselung besonders kritischer Bereiche der Festplatte. 
+
+\textbf{Zuverlässigkeit}
+NTFS kann mit Hilfe von Log-Dateien und Checkpoint Informationen die Stabilität des Dateisystems nach einem Absturz oder Fehler wieder herstellen. Wenn der Fehler in einem bestimmten Sektor auftritt, werden die Cluster dynamisch neu verknüpft. Dadurch können viele Daten wieder zugänglich gemacht werden. Die fehlerhaften Sektoren werden entsprechend gekennzeichnet und in der Zukunft gemieden. 
+
+\textbf{Verwaltbare Speichergröße}
+Mit NTFS können Festplatten mit zusammen bis zu 256 TB bei einer Clustergröße von 64 KB verwaltet werden. Eine Datei kann unter diesen Voraussetzungen bis zu 256 TB groß sein. Der Standard von 4 KB Clustergröße erlaubt jedoch nur eine Festplattenkapazität von 16 TB und analog eine maximale Dateigröße von 16 TB. 
+
+Quelle:
+https://technet.microsoft.com/en-us/library/dn466522(v=ws.11).aspx
 \section*{Aufgabe 2}
 
 
