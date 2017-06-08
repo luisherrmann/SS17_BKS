@@ -75,11 +75,11 @@ Das System befindet sich zum Zeitpunkt 8 und zum Zeitpunkt 9 im Zustand busy wai
 Der Abbruch eines Prozesses kann in verschiedenen Fällen sinnvoll sein. Für das Betriebssystem ist es aus Sicherheitsgründen sinnvoll einen Prozess abzubrechen, der auf Speicherbereiche zugreifen will, die ihm nicht gehören. Der Abbruch eines Prozesses durch eine*n Benutzer*in kann sinnvoll sein, wenn ein Prozess nicht mehr reagiert und sich deshalb auch nicht mehr sinnvoll beenden lässt. \\\\
 Im Betriebssystem Unix kann mensch sich mit dem Shell-Befehl ''top'' eine Liste der aktiven Prozesse anzeigen lassen. Ein Prozess kann hier mit Eingabe von ''k'' (für ''kill'') und der ProcessID (PID) abgebrochen werden. 
 \section{Aufgabe 2}
-\subsection{a}
+\subsection*{a)}
 
 \inputmintedframed{c}{scheduler.c}
 
-\subsection{b}
+\subsection*{b)}
 
 Zwecks Testen unserer Scheduler haben wir das File \textit{sched\_test.c} leicht abgewandelt, sodass nun auch mehrere Tests durchgeführt werden können. Die ursprüngliche \textit{main} haben wir in die void-Funktion \textit{runtests} ausgelagert, welche nun als Paremeters ein 2D-\textit{uint64\_t}-Array erhält, in dem die auszuführenden Prozess spezifiziert sind. Die eigentliche Definition der Tests finden und die Aufrufe von \textit{runtests()} finden in \textit{main()} statt. Dabei ist die Anwendung interaktiv gestaltet, sodass der Nutzer den Test seiner Wahl ausführen kann.
 
@@ -100,12 +100,12 @@ Der zweite Test wurde von der Vorlesung übernommen. Es ergeben sich genau die i
 \newline
 
 \begin{minipage}{0.8 \textwidth}
-\includegraphics[width=\textwidth]{rr.pdf}
+\includegraphics[width=\textwidth]{spn.pdf}
 \end{minipage}
 \newline
 
 \begin{minipage}{0.8 \textwidth}
-\includegraphics[width=\textwidth]{fcfs.pdf}
+\includegraphics[width=\textwidth]{hrrn.pdf}
 \end{minipage}
 \newline
 

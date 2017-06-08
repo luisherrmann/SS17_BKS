@@ -42,7 +42,6 @@ void runtest(size_t pnum, uint64_t processes[][2]) {
 	printf(CYAN "ID (done, todo, waited)" NORMAL "\n\n");
 
 	for(size_t ai=0; ai<ALGO_NUM; ai++) {
-		printf("Size:%i\n",(int)(sizeof(processes)/(2*sizeof(uint64_t))));
 		Process* head = malloc(sizeof(Process));
 		head->pID = 0;
 		head->cycles_done = head->cycles_todo = head->cycles_waited = 0;
@@ -121,8 +120,8 @@ void runtest(size_t pnum, uint64_t processes[][2]) {
 
 int main(void){
 	uint64_t test_def[NUM_PROCESSES][2] = {{0, 3}, {2, 7}, {4, 1}, {6, 5}};
-	uint64_t test1[5][2] = {{0,3},{2,6},{4,4},{6,5},{8,2}};
-	uint64_t test2[3][2] = {{0,3},{0,3},{0,3}};
+	uint64_t test1[5][2] = {{0, 3},{2, 6},{4, 4},{6, 5},{8, 2}};
+	uint64_t test2[3][2] = {{0, 3},{0, 3},{0, 3}};
 	char c;
 	while(true){
 		printf("\nTests 0 to 2 available. Enter the desired test number to run test. Enter q to finish.\n");

@@ -22,16 +22,18 @@
 #include <stdio.h>
 #include "scheduler.h"
 
+struct Process* queue;
+
 void rr(struct Process* head) {
 	if(head->next != NULL){
 		struct Process* current = head->next;
 		struct Process* rrProcess = head; //head wird mit state = DEAD erzeugt.
 		do{
 			if(current->state == RUNNING){
-				if(current->cycles_todo == 0) current->state = DEAD;
 				//Falls schon ein aelterer Prozess wartet, aktiviere
-				else if(rrProcess != head){
-					current->state = READY;
+				if(rrProcess != head){
+					if(current->cycles_todo == 0) current->state =DEAD;
+					else current->state = READY;
 					break;
 				}
 				//Ansonsten versuche juengeren wartenden Prozess zu finden
@@ -42,7 +44,8 @@ void rr(struct Process* head) {
 				}
 			}
 			else if(current->state == READY){
-				rrProcess = current;
+				if(current->cycles_todo == 0) current->state = DEAD;
+				else rrProcess = current;
 			}
 			current = current->next;
 		} while(current != head);
@@ -52,31 +55,29 @@ void rr(struct Process* head) {
 
 void fcfs(struct Process* head) {
 	if(head->next != NULL){
-		struct Process* current = head->next;
-		if(current->cycles_done == 0) current->state = RUNNING;
-		else{
-			while(current->next != head && current->state != RUNNING){
-				current = current->next;
-			}
-			if(current->cycles_todo == 0){
-				current->state = DEAD;
-				current->next->state = RUNNING;
-			}
+		//struct Process* current = head->next;
+		struct Process* current = head;
+		//Waehle ersten Prozess, der noch Zyklen zu absolvieren hat.
+		while(current->next != head && current->cycles_todo == 0){
+			current->state = DEAD;
+			current = current->next;
 		}
+		if(current->cycles_todo > 0) current->state = RUNNING;
+		else if(current->cycles_todo == 0) current->state = DEAD;
 	}
 }
 
 void spn(struct Process* head) {
 	if(head->next != NULL){
+		//head->cycles_todo ist 0
 		struct Process* sptProcess = head;
 		struct Process* current = head->next;
+		//Iteriere ueber alle Prozesse in der Wartschlange
 		do{
-			if(current->state == RUNNING){
-				if(current->cycles_todo == 0) current->state = DEAD;
-				else{
-					sptProcess = current;
-					break;
-				}
+			if(current->cycles_todo == 0) current->state = DEAD;
+			else if(current->state == RUNNING){
+				sptProcess = current;
+				break;
 			}
 			else if(current->state == READY && (sptProcess->cycles_todo == 0 || current->cycles_todo < sptProcess->cycles_todo)){
 				sptProcess = current;
@@ -90,15 +91,14 @@ void spn(struct Process* head) {
 void hrrn(struct Process* head) {
 	if(head->next != NULL){
 		struct Process* hrrProcess = head;
+		//Initialisierung mit neg. Wert stellt sicher, dass initiale hrrRatio stets uebetroffen werden kann
 		double hrrRatio = -1.0;
 		struct Process* current = head->next;
 		do{
-			if(current->state == RUNNING){
-				if(current->cycles_todo == 0) current->state = DEAD;
-				else{
-					hrrProcess = current;
-					break;
-				}
+			if(current->cycles_todo == 0) current->state = DEAD;
+			else if(current->state == RUNNING){
+				hrrProcess = current;
+				break;
 			}
 			else if(current->state == READY){
 				const uint64_t currRatio = (double)(current->cycles_waited + current->cycles_todo)/(double)current->cycles_todo;
