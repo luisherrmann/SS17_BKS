@@ -42,31 +42,31 @@ Es handelt sich bei First-Come-First-Served (FCFS)um einen non-preemptive Schedu
 Annahme:\\
 Prozesse im Zustand ''blocked'' versuchen aktiv auf eine fremdbelegte Ressource zuzugreifen und legen sich nicht schlafen. Da es sich bei FCFS um einen non-preemptive Scheduling Algorithmus handelt, greift der Scheduler nicht ein.  \\
 \subsection*{a)}
-\begin{tabular}{lcccc}
-	Zeitpunkt & P1 & P2 & P3 & P4 \\
-	0 & new & - & - & - \\
-	1 & running & new & - & - \\
-	2 & running & ready  & new & - \\
-	3 & running & ready & ready & new \\
-	4 & running & ready & ready & ready \\
-	5 & waiting & running & ready & ready \\
-	6 & waiting & running & ready & ready \\
-	7 & waiting & killed & running & ready \\
-	8 & waiting & killed & blocked & ready \\
-	9 & waiting & killed & blocked & ready \\
-	10 & ready & killed & waiting & running \\
-	11 & ready & killed & waiting & running \\
-	12 & ready & killed & waiting & running \\
-	13 & ready & killed & waiting & running \\
-	14 & ready & killed & waiting & running \\
-	15 & running & killed & ready & terminated \\
-	16 & running & killed & ready & terminated \\
-	17 & running & killed & ready & terminated \\
-	18 & running & killed & ready & terminated \\
-	19 & terminated & killed & running & terminated \\
-	20 & terminated & killed & running & terminated \\
-	21 & terminated & killed & running & terminated \\
-	22 & terminated & killed & terminated & terminated \\
+\begin{tabular}{|l|c|c|c|c|} \hline
+	Zeitpunkt & P1 & P2 & P3 & P4 \\ \hline
+	0 & new & - & - & - \\ \hline
+	1 & running & new & - & - \\ \hline
+	2 & running & ready  & new & - \\ \hline
+	3 & running & ready & ready & new \\ \hline
+	4 & running & ready & ready & ready \\ \hline
+	5 & waiting & running & ready & ready \\ \hline
+	6 & waiting & running & ready & ready \\ \hline
+	7 & waiting & killed & running & ready \\ \hline
+	8 & waiting & killed & blocked & ready \\ \hline
+	9 & waiting & killed & blocked & ready \\ \hline
+	10 & ready & killed & waiting & running \\ \hline
+	11 & ready & killed & waiting & running \\ \hline
+	12 & ready & killed & waiting & running \\ \hline
+	13 & ready & killed & waiting & running \\ \hline
+	14 & ready & killed & waiting & running \\ \hline
+	15 & running & killed & ready & terminated \\ \hline
+	16 & running & killed & ready & terminated \\ \hline
+	17 & running & killed & ready & terminated \\ \hline
+	18 & running & killed & ready & terminated \\ \hline
+	19 & terminated & killed & running & terminated \\ \hline
+	20 & terminated & killed & running & terminated \\ \hline
+	21 & terminated & killed & running & terminated \\ \hline
+	22 & terminated & killed & terminated & terminated \\ \hline
 	
 \end{tabular}	
 \subsection*{b)}
