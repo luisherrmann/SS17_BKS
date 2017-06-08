@@ -1,0 +1,56 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{minted}
+\usepackage{mdframed}
+\usepackage{courier}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\begin{document}
+	
+	\definecolor{bg}{RGB}{230,230,230}
+	\newcommand{\inputmintedframed}[2]{
+		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+			\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
+	
+	\hrulefill
+	\begin{center}
+		\bfseries % Fettdruck einschalten
+		\sffamily % Serifenlose Schrift
+		\begin{huge}
+			Betriebs- und Kommunikationssysteme
+		\end{huge}\\
+		\begin{Large}
+			Sommersemester 2017, 6. Übungsblatt
+		\end{Large}\\
+		\begin{small}
+			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
+		\end{small}
+		
+		\vspace{-10pt}
+	\end{center}
+	\hrulefill
+	
+\section*{Aufgabe 1}
+\subsection*{a}
+\begin{enumerate}
+	\item Über Eingabe- und Ausgabeschnittstellen(E/A engl. Input/Output I/O) interagiert ein Computer über externe Geräte wie Festplatten, Netzwerk-Sockets, Tastatur, Maus Bildschirmen, Druckern etc. mit der Umwelt.\\
+	Als DMA wird ein Speicherdirektzugriff (engl. Direct Memory Access) bezeichnet. Die Daten werden nicht über den Prozessor, sondern über eine eigene Datenleitung (Bus) in den Speicher übertragen, so dass die Ausführung laufender Prozesse von dem Datentransfer nicht direkt beeinträchtigt wird. Der Datentransfer wird von dem DMA-Controller verwaltet.
+	\item Beim I/O Buffering werden Eingabedaten vor der Verarbeitung im Kernel und Ausgabedaten vor dem Schreiben in den Ausgabestream zwischengespeichert. So kann ein Performancegewinn durch das gebündelte Lesen und Schreiben der Daten erreicht werden.  
+	\item Redundant Array of Independent Disks (RAID) steht für eine Methode, bei der Daten redundant auf verschiedenen Datenträgern gespeichert werden. So können Daten bei eventuellen Ausfällen einzelner Datenträger aus anderen Datenquellen wiederhergestellt werden. 
+	    
+\end{enumerate}
+\section*{Aufgabe 2}
+
+
+\inputmintedframed{c}{my_lsN.c}
+
+
+
+\end{document}
