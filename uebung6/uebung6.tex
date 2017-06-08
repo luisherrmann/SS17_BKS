@@ -44,7 +44,12 @@
 	Als DMA wird ein Speicherdirektzugriff (engl. Direct Memory Access) bezeichnet. Die Daten werden nicht über den Prozessor, sondern über eine eigene Datenleitung (Bus) in den Speicher übertragen, so dass die Ausführung laufender Prozesse von dem Datentransfer nicht direkt beeinträchtigt wird. Der Datentransfer wird von dem DMA-Controller verwaltet.
 	\item Beim I/O Buffering werden Eingabedaten vor der Verarbeitung im Kernel und Ausgabedaten vor dem Schreiben in den Ausgabestream zwischengespeichert. So kann ein Performancegewinn durch das gebündelte Lesen und Schreiben der Daten erreicht werden.  
 	\item Redundant Array of Independent Disks (RAID) steht für eine Methode, bei der Daten redundant auf verschiedenen Datenträgern gespeichert werden. So können Daten bei eventuellen Ausfällen einzelner Datenträger aus anderen Datenquellen wiederhergestellt werden. 
-	    
+	\item Die Tree-Structured Directory ist eine Baum-Datenstruktur, die Verzeichnisse abbildet. Ordner stellen Knoten dar, während Dateien durch Blätter repräsentiert werden. So ist jede Datei und jedes Verzeichnis durch den Pfad zum Wurzelverzeichnis eindeutig zu identifizieren.
+	\item Ein Virtual File System liegt entweder im Kernel zwischen der System-Call Schnittstelle, oder ist als ladbares Modul konstruiert. Es verwaltet alle verschiedenen eingebundenen Dateisysteme und bietet Schnittstellen an.  
+	\item Indexed Allocation ist eine Möglichkeit Dateien auf der Festplatte zu verwalten. Dabei verwaltet eine Tabelle mit Indizes viele Tabellen, die die Speicheradressen der Daten einer einzelnen Datei im Speicher enthalten.
+	\item Inodes sind Informationsblöcke über Dateien auf UNIX-Betriebssystemen. Sie fassen relevante Informationen wie Dateigröße, Rechte und verschiedene Timestamps einer Datei zusammen.
+	 
+	   
 \end{enumerate}
 \section*{Aufgabe 2}
 
