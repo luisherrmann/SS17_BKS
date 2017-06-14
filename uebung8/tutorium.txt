@@ -1,0 +1,53 @@
+Hinweise Aufgabe 2: 
+
+Der client bekommt Dateipfad und der Client verbindet sich mit Server, server liest Pfad aus und der server sucht Pfad 
+
+Falls Datei: Datei -> Client
+Falls Ordner: Liste von Dateien -> Client
+sonst: Fehler
+
+Client zeigt die Antwort des Servers an und oder gibt File zurück.
+
+Port aussuchen.
+
+Protokollhirachie ist relevant (auch für Klausur!)
+IP 0.0.0.0 (als IP für Server) -> Alle IPs, die der Computer/Server gerade hat
+
+bind() bindet lokale Socket Address an ein socket
+bind() bei Server notwendig, da fester Port wichtig
+bei Client nicht relevant.
+
+recv (lesen)
+recvfrom
+
+send
+sendto
+
+TCP
+Server: 
+listen() : socket soll auf eingehende Verbindungen von clients wartet
+accept() : akzeptiert einen Client 
+
+client: connect()
+
+
+shutdown(): stream aus einer Richtung wird gelöscht
+close() -> socket wird zerstört
+
+Beispiel:
+Server:
+s2 = socket()..
+bind(s2,&localhost)
+listen(s2, qlength) - qlength: Länge der Queue der wartenden Clients
+s3=accept(s2,&source,&1);
+
+read(s3,...) / recv(..);
+close();
+
+Client:
+s1 = socket)
+
+connect(s1,&dest,1);
+write(s1,..) /send
+
+close(s1)
