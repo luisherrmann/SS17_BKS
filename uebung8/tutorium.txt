@@ -72,3 +72,5 @@ u_short htons(u_short number)
 Socketadress anlegen
 struct sockaddr_un serv_addr;
 bzero((char *) &serv_addr, sizeof(Serv_addr));
+
+Beispiele: Google Beej's
