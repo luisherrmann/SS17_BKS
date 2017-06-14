@@ -51,3 +51,24 @@ connect(s1,&dest,1);
 write(s1,..) /send
 
 close(s1)
+
+____________
+C IP-Adressen
+struct in_addr //IPv4
+
+struct in6_addr //IPv6
+
+struct sockaddr_un // unix socket
+
+struct sockaddr_in // Internet socked address
+
+struct sockaddr //Allgemeines Socketaddress (Unix & Internet Sockets müssen auf dieses gecastet werden)
+
+Zum setzen des Ports:
+maschine byte order <-> network byte order
+
+u_short htons(u_short number)
+
+Socketadress anlegen
+struct sockaddr_un serv_addr;
+bzero((char *) &serv_addr, sizeof(Serv_addr));
