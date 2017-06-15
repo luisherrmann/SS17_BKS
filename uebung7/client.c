@@ -25,14 +25,17 @@ struct shared_mem *shm;
 int writeToStdIn(){	
 	const char *filename = "/shared_space";
 	int fd_shm = shm_open(filename, O_RDWR, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
-	
+	if(fd_shm == -1){
+		fprintf(stderr, "Error opening Shared Memory");
+		return EXIT_FAILURE;
+	}
 	if((shm = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm,0)) == MAP_FAILED){
 		fprintf(stderr, "Error mapping memory %i", errno);
 		return EXIT_FAILURE;
 	}
 
 	char *buf_t = malloc(MSG_LEN);	
-	fgets(buf_t,MSG_LEN,stdin);
+	//fgets(buf_t,MSG_LEN,stdin);
 	char curr;
 	size_t i =0;
 	while ((curr=fgetc(stdin))!=EOF && i<MSG_LEN-1){
