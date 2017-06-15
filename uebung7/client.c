@@ -21,13 +21,15 @@ struct shared_mem{
 	int received_message;
 };
 
-struct shared_mem *mem_ptr;
-int writeToStdIn(){
-	int fd_shared;	
+struct shared_mem *shm;
+int writeToStdIn(){	
 	const char *filename = "/shared_space";
-	fd_shared = shm_open(filename,O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+	int fd_shm = shm_open(filename, O_RDWR, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
 	
-	mem_ptr = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shared,0);
+	if((shm = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm,0)) == MAP_FAILED){
+		fprintf(stderr, "Error mapping memory %i", errno);
+		return EXIT_FAILURE;
+	}
 
 	char *buf_t = malloc(MSG_LEN);	
 	fgets(buf_t,MSG_LEN,stdin);
@@ -39,9 +41,9 @@ int writeToStdIn(){
 	}
 	buf_t[i]='\0';
 	//strcpy(memPtr->buf,bufT);
-	sprintf(mem_ptr->buf,"%s\n",buf_t);
-	mem_ptr->received_message = 1;	
-	close(fd_shared);
+	sprintf(shm->buf,"%s\n",buf_t);
+	shm->received_message = 1;	
+	close(fd_shm);
 	return EXIT_SUCCESS;
 }
 

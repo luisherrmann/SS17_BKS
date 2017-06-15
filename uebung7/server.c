@@ -32,18 +32,17 @@ int main (int argc, char **argv)
     	}
 
     	struct shared_mem *shm;
-	if(mmap(NULL, sizeof (struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0) == MAP_FAILED){
+	if((shm = mmap(NULL, sizeof (struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0)) == MAP_FAILED){
 		fprintf(stderr, "Error mapping memory");
 		return EXIT_FAILURE;
 	}
 	shm->received_message = 0;
 	//Aktives Warten auf erhaltene Nachricht
-	fprintf(stdout, "I am here");
 	while(shm->received_message == 0){}
 	char *message = malloc(strlen(shm->message));
 	strcpy(message, shm->message);
 	fprintf(stdout, "Client passed message: %s", message);
 	close(fd_shm);
-	shm_unlink("/shared_space");
+	//shm_unlink("/shared_space");
 	return EXIT_SUCCESS;
 } 
