@@ -1,3 +1,4 @@
+//Compile with gcc -std=gnu99 -Wall -Wextra -pedantic -o client client.c -lrt -pthread
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -18,7 +19,7 @@ struct shared_mem{
 	//int received_message;
 };
 
-int main (int argc, char **argv)
+int main ()
 {
 	//Erzeuge POSIX-Semaphore um aktives Warten zu vermeiden
 	sem_t *fd_sem;
@@ -32,7 +33,7 @@ int main (int argc, char **argv)
 		fprintf(stderr, "Error opening Shared Memory: ERRNO %i\n", errno);
 		return EXIT_FAILURE;
     	}
-
+	//Vergrößere den geteilten Speicher auf die Größe eines struct shared_mem
 	if (ftruncate(fd_shm, sizeof(struct shared_mem)) == -1){
 		fprintf(stderr, "Error extending Shared Memory: ERRNO %i\n", errno);
 		return EXIT_FAILURE;
