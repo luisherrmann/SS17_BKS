@@ -13,16 +13,18 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 
-#define BUF_SIZE 500
+#define MSG_LEN 500
 
 struct shared_mem{
 	int len;
-	char buf[BUF_SIZE];
+	char buf[MSG_LEN];
+	int received_message;
 };
+
 struct shared_mem *mem_ptr;
 int writeToStdIn(){
 	int fd_shared;	
-	const char *filename = "/sharedSpace.txt";
+	const char *filename = "/shared_space";
 	fd_shared = shm_open(filename,O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 	
 	mem_ptr = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shared,0);
@@ -42,6 +44,7 @@ int writeToStdIn(){
 	close(fd_shared);
 	return EXIT_SUCCESS;
 }
+
 int main(int argc, char *argv[]){
 	writeToStdIn();
 
