@@ -41,7 +41,7 @@ int main (int argc, char **argv)
 	while(shm->received_message == 0){}
 	char *message = malloc(strlen(shm->message));
 	strcpy(message, shm->message);
-	fprintf(stdout, "\nClient passed message: %s", message);
+	fprintf(stdout, "\nClient passed message: %s\n", message);
 	close(fd_shm);
 	shm_unlink("/shared_space");
 	return EXIT_SUCCESS;
