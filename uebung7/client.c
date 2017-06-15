@@ -32,7 +32,8 @@ int writeToStdIn(){
 	}
 
 	char *buf_t = malloc(MSG_LEN);	
-	fgets(buf_t,MSG_LEN,stdin);
+	//fgets(buf_t,MSG_LEN,stdin);
+
 	char curr;
 	size_t i =0;
 	while ((curr=fgetc(stdin))!=EOF && i<MSG_LEN-1){
@@ -40,8 +41,8 @@ int writeToStdIn(){
 		i++;
 	}
 	buf_t[i]='\0';
-	//strcpy(memPtr->buf,bufT);
-	sprintf(shm->buf,"%s\n",buf_t);
+	strcpy(shm->buf,buf_t);
+	//sprintf(shm->buf,"%s\n",buf_t);
 	shm->received_message = 1;	
 	close(fd_shm);
 	return EXIT_SUCCESS;
