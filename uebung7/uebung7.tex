@@ -96,9 +96,15 @@
 		
 	\end{enumerate}
 
-	\item BIOS steht für Basic Input Output System, UEFI für Unified Extinsible Firmware Interface. Bei beiden handelt es sich um die Spezifikation einer Firmware-Schnittstelle, um die Kommunikation zwischen Firmware einer physischen Plattform und dem Betriebssystem zu ermöglichen.
+	\item BIOS steht für Basic Input Output System, UEFI für Unified Extinsible Firmware Interface. 	 Bei beiden handelt es sich um die Spezifikation einer Firmware-Schnittstelle, um die Kommunikation zwischen Firmware einer physischen Plattform und dem Betriebssystem zu ermöglichen. BIOS oder UEFI wird beim Booten eines Computers gestartet, initialisiert die Hardware und überprüft die Funktionstüchtigkeit.
+	\begin{enumerate}
+		\item[BIOS] ist ein kleines Programm, dass auf einem geschützten Chip auf dem Mainboard gespeichert ist. Das Programm konnte nur durch verhältnismäßig aufwendige Firmware-Updates verändert werden. BIOS ist ein veraltete Methode, die aufgrund der sich ändernden Spezifikationen selbst immer wieder angepasst werden musste.
+		\item[UEFI] ist der Nachfolger von BIOS, allerdings handelt es sich bei UEFI um ein eigenes kleines Betriebssystem, dass die Aufgabe einer Firmware-Schnittstelle übernimmt. Es ist leichter zu warten und zu bedienen. Außerdem wurden neue Standards wie 64-Bit und das GPT-Partitionsschema eingeführt. So können bis zu 3 TB große Speichermedien eingebunden werden. Außerdem bietet UEFI mit Secure Boot das ''sichere starten'' des Betriebssystems an. Dies soll verhindern, dass Schadsoftware schon vor dem Betriebssystem aktiv wird und damit dieses korrumpieren kann. Allerdings ist der Sicherheitsnutzen dieser Methode umstritten und sie wird vor allem von MS Windows verwendet. 
+	\end{enumerate}
+	Quellen: \\
+	http://www.admin-magazin.de/Das-Heft/2014/03/UEFI-Secure-Boot-und-alternative-Betriebssysteme \\
+	http://praxistipps.chip.de/bios-oder-uefi-das-sind-die-unterschiede\_36099
 	
-	Einer der wesentlichen Unterschiede beider Spezifikationen ist 
 \end{enumerate}
 
 \section*{Aufgabe 2}
