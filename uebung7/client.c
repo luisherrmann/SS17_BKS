@@ -15,28 +15,31 @@
 
 #define BUF_SIZE 500
 
-struct sharedMem{
+struct shared_mem{
 	int len;
-	const char *buf[BUF_SIZE];
+	char buf[BUF_SIZE];
 };
-struct sharedMem *memPtr;
+struct shared_mem *mem_ptr;
 int writeToStdIn(){
-	int fdShared;	
-	const char *filename = "/sharedSpace";
-	fdShared = shm_open(filename,O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
-	if (ftruncate(fdShared, sizeof(struct sharedMem)) == -1)
-		return EXIT_FAILURE;
-	memPtr = mmap(NULL,sizeof(struct sharedMem), PROT_READ | PROT_WRITE, MAP_SHARED, fdShared,0);
-	//printf("%i",memPtr->len);	
-	//memPtr->len = 5;
-	//memPtr->buf= malloc(BUF_SIZE);
-	const char *bufT[BUF_SIZE];	
-	fgets(bufT,BUF_SIZE,stdin);
+	int fd_shared;	
+	const char *filename = "/sharedSpace.txt";
+	fd_shared = shm_open(filename,O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 	
-	strcpy(memPtr->buf,bufT);
-//	printf("%s\n",memPtr->buf);
+	mem_ptr = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shared,0);
+
+	char *buf_t = malloc(BUF_SIZE);	
+	fgets(buf_t,BUF_SIZE,stdin);
+	char curr;
+	size_t i =0;
+	while ((curr=fgetc(stdin))!=EOF && i<BUF_SIZE-1){
+		buf_t[i]=(char)curr;
+		i++;
+	}
+	buf_t[i]='\0';
+	//strcpy(memPtr->buf,bufT);
+	sprintf(mem_ptr->buf,"%s\n",buf_t);
 	
-	close(fdShared);
+	close(fd_shared);
 	return EXIT_SUCCESS;
 }
 int main(int argc, char *argv[]){
