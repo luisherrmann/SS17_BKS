@@ -38,6 +38,7 @@ int main (int argc, char **argv)
 	}
 	shm->received_message = 0;
 	//Aktives Warten auf erhaltene Nachricht
+	fprintf(stdout, "I am here");
 	while(shm->received_message == 0){}
 	char *message = malloc(strlen(shm->message));
 	strcpy(message, shm->message);

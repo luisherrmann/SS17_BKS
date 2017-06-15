@@ -29,18 +29,18 @@ int writeToStdIn(){
 	
 	mem_ptr = mmap(NULL,sizeof(struct shared_mem), PROT_READ | PROT_WRITE, MAP_SHARED, fd_shared,0);
 
-	char *buf_t = malloc(BUF_SIZE);	
-	fgets(buf_t,BUF_SIZE,stdin);
+	char *buf_t = malloc(MSG_LEN);	
+	fgets(buf_t,MSG_LEN,stdin);
 	char curr;
 	size_t i =0;
-	while ((curr=fgetc(stdin))!=EOF && i<BUF_SIZE-1){
+	while ((curr=fgetc(stdin))!=EOF && i<MSG_LEN-1){
 		buf_t[i]=(char)curr;
 		i++;
 	}
 	buf_t[i]='\0';
 	//strcpy(memPtr->buf,bufT);
 	sprintf(mem_ptr->buf,"%s\n",buf_t);
-	
+	mem_ptr->received_message = 1;	
 	close(fd_shared);
 	return EXIT_SUCCESS;
 }
