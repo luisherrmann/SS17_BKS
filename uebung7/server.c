@@ -1,4 +1,5 @@
-//Compile with gcc -std=gnu99 -Wall -Wextra -pedantic -o client client.c -lrt -pthread
+//Compile with gcc -std=c11 -Wall -Wextra -pedantic -o client client.c -lrt -pthread
+#define _DEFAULT_SOURCE //Aktiviert glibc-Erweiterungen
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -10,9 +11,9 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 
-// Buffer data structures
 #define MSG_LEN 500
 
+//Buffer Datenstruktur
 struct shared_mem{
 	int len;
 	char message[MSG_LEN];

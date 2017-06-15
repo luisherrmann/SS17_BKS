@@ -29,7 +29,7 @@
 			Betriebs- und Kommunikationssysteme
 		\end{huge}\\
 		\begin{Large}
-			Sommersemester 2017, 6. Übungsblatt
+			Sommersemester 2017, 7. Übungsblatt
 		\end{Large}\\
 		\begin{small}
 			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
@@ -155,6 +155,17 @@
 	\end{itemize}
 	
 	\item 
+	
+	\inputmintedframed{c}{server.c}
+	\inputmintedframed{c}{client.c}
+	
+	Die Programme sind mittels:\\
+	
+	\textit{gcc -std=c11 -o server.c -Wall -Wextra -pedantic server.c -lrt -pthread} und
+	
+	\textit{gcc -std=c11 -o client.c -Wall -Wextra -pedantic client.c -lrt -pthread}
+	
+	Der Server muss VOR dem Client als Hintergrundprozess gestartet werden, also mit \textit{./server \&}.
 \end{enumerate}
 
 
