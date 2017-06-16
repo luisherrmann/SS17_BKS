@@ -105,6 +105,13 @@
 	http://www.admin-magazin.de/Das-Heft/2014/03/UEFI-Secure-Boot-und-alternative-Betriebssysteme \\
 	http://praxistipps.chip.de/bios-oder-uefi-das-sind-die-unterschiede\_36099
 	
+	
+	\item Die Mindmap ist im Anhang beigelegt.
+	
+	10 Begriffe, die wir gut verstanden haben:
+	Microkernel, Monolithic Kernel, Treiber, Scheduling, virtuelle Adresse, Thrashing, Transaction Lookaside Buffer, Syscall, Fixed Partitioning
+	
+	Wir sind nicht sicher, dass wir den Unterschied zwischen POSIX Shared Memory und Memory Mapped Files verstanden haben, aber davon abgesehen denken wir, alle behandelten Begriffe zu verstehen.
 \end{enumerate}
 
 \section*{Aufgabe 2}
@@ -160,9 +167,12 @@
 		In Linux sind die Funktionen zur Nutzung von Sockets im Paket <sys/sockets.h> festgelegt.
 	\end{itemize}
 	
-	\item 
+	\item Server-Programm:
 	
 	\inputmintedframed{c}{server.c}
+	
+	Client-Programm:
+	
 	\inputmintedframed{c}{client.c}
 	
 	Die Programme sind mittels:\\
@@ -173,6 +183,10 @@
 	
 	Der Server muss VOR dem Client als Hintergrundprozess gestartet werden, also mit \textit{./server \&}.
 \end{enumerate}
+
+\newpage
+
+\includegraphics[width=\textwidth,page=1,trim={2 2 2 4},clip]{mindmap.pdf}
 
 
 
