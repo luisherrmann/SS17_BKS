@@ -85,15 +85,9 @@ int start_fileserver_udp(){
 		return 0;
 	}
 	listen(udp_socket_fd,3);
-	int client_socket;
-	//Stelle Verbindung mit Client her
-	if((client_socket = accept(udp_socket_fd, (struct sockaddr *) &client_sock_addr, &socketsize)) == -1){
-		fprintf(stderr, "Error establishing connection");
-		return 0;
-	}
 	char* client_message = malloc(BUF_SIZE);
 	//Lese solange Socket nicht leer ist.
-	recv(client_socket, BUFFER, BUF_SIZE, 0);
+	recv(udp_socket_fd, BUFFER, BUF_SIZE, 0);
 	fprintf(stdout, "Message received: %s", BUFFER);
 	close(udp_socket_fd);
 	return 0;
