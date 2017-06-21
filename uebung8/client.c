@@ -29,25 +29,39 @@ int connect_fileserver_unix(char *server_address, char *filepath){
 }
 int connect_fileserver_tcp(char *server_address, char *filepath){
 	int tcp_socket_fd = socket(AF_INET,SOCK_STREAM,0);
-	struct sockaddr_in my_sock_addr;// = malloc(sizeof(struct sockaddr_in));
+	struct sockaddr_in my_sock_addr;
 	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
 	my_sock_addr.sin_family = AF_INET;
-	my_sock_addr.sin_port = htons(PORT); //nicht notwendig
-	inet_aton(server_address,&my_sock_addr.sin_addr);//.s_addr);
+	my_sock_addr.sin_port = htons(PORT); 
+	inet_aton(server_address,&my_sock_addr.sin_addr);
 	strcpy(BUFFER,filepath);
-	size_t send_byte = 0;
 	connect(tcp_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
-	// continue ... connect()
+	
+	size_t send_byte = 0;
+	while (send_byte < strlen(filepath)){
+		send_byte += send(tcp_socket_fd,BUFFER,strlen(BUFFER),MSG_MORE);
+	}
+	send_byte += send(tcp_socket_fd,"\0",1,MSG_CONFIRM);
+	int cur_recv;
+
+	do {		
+		cur_recv += recv(tcp_socket_fd,BUFFER,strlen(BUFFER),0);
+		if (cur_recv>-1){
+			printf("%s",BUFFER);
+		}		
+		
+	}while (cur_recv!=0 || cur_recv==-1);
+	printf("\n");
+	close(tcp_socket_fd);
 	return 0;
 }
 int connect_fileserver_udp(char *server_address, char *filepath){
-	//const char tempAddrString[] = "127.0.0.1";
 	int udp_socket_fd = socket(AF_INET,SOCK_DGRAM,17); // AR_INET for IPv4, SOCK_DGRAM for Datagram, 17 for UDP
-	struct sockaddr_in my_sock_addr;// = malloc(sizeof(struct sockaddr_in));
+	struct sockaddr_in my_sock_addr;
 	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
 	my_sock_addr.sin_family = AF_INET;
-	my_sock_addr.sin_port = htons(PORT); //nicht notwendig
-	inet_aton(server_address,&my_sock_addr.sin_addr);//.s_addr);
+	my_sock_addr.sin_port = htons(PORT); 
+	inet_aton(server_address,&my_sock_addr.sin_addr);
 	strcpy(BUFFER,filepath);
 	size_t send_byte = 0;
 	while (send_byte < strlen(filepath)){
@@ -57,7 +71,7 @@ int connect_fileserver_udp(char *server_address, char *filepath){
 	int cur_recv;
 
 	do {	
-		cur_recv += recvfrom(udp_socket_fd,(void*)&"\0", 1,MSG_WAITALL,(struct sockaddr*)&my_sock_addr, NULL);
+		cur_recv += recvfrom(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_WAITALL,(struct sockaddr*)&my_sock_addr, NULL);
 		if (cur_recv>-1){
 			printf("%s",BUFFER);
 		}		
