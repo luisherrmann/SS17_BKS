@@ -21,15 +21,9 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 
-#define MSG_LEN 500
+#define BUF_SIZE 512
 #define PORT 1502
-struct shared_mem{
-	int len;
-	char buf[MSG_LEN];
-};
-
-struct shared_mem *shm;
-char BUFFER[MSG_LEN];
+char BUFFER[BUF_SIZE];
 int connect_fileserver_unix(char *server_address, char *filepath){
 	return 0;
 }
@@ -42,6 +36,7 @@ int connect_fileserver_tcp(char *server_address, char *filepath){
 	inet_aton(server_address,&my_sock_addr.sin_addr);//.s_addr);
 	strcpy(BUFFER,filepath);
 	size_t send_byte = 0;
+	connect(tcp_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
 	// continue ... connect()
 	return 0;
 }
@@ -56,13 +51,13 @@ int connect_fileserver_udp(char *server_address, char *filepath){
 	strcpy(BUFFER,filepath);
 	size_t send_byte = 0;
 	while (send_byte < strlen(filepath)){
-		send_byte += sendto(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_MORE,(struct sockaddr*)&my_sock_addr,sizeof(struct 		sockaddr_in));	
+		send_byte += sendto(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_MORE,(const struct sockaddr*)&my_sock_addr,sizeof(struct 		sockaddr));	
 	}
-	send_byte += sendto(udp_socket_fd,(void*)&"\0", 1,MSG_CONFIRM,(struct sockaddr*)&my_sock_addr,sizeof(struct 				sockaddr_in));
+	send_byte += sendto(udp_socket_fd,(void*)&"\0", 1,MSG_CONFIRM,(struct sockaddr*)&my_sock_addr,sizeof(struct 				sockaddr));
 	int cur_recv;
 
 	do {	
-		cur_recv += recvfrom(udp_socket_fd,(void*)&"\0", 1,MSG_WAITALL,(struct sockaddr*)&my_sock_addr, sizeof(struct 				sockaddr_in));
+		cur_recv += recvfrom(udp_socket_fd,(void*)&"\0", 1,MSG_WAITALL,(struct sockaddr*)&my_sock_addr, NULL);
 		if (cur_recv>-1){
 			printf("%s",BUFFER);
 		}		
