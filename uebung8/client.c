@@ -26,31 +26,31 @@
 char BUFFER[BUF_SIZE];
 
 int connect_fileserver_co(char *server_address, char *filepath, int socketdomain){
-	int tcp_socket_fd = socket(socketdomain,SOCK_STREAM,0);
+	int co_socket_fd = socket(socketdomain,SOCK_STREAM,0);
 	struct sockaddr_in my_sock_addr;
 	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
 	my_sock_addr.sin_family = AF_INET;
 	my_sock_addr.sin_port = htons(PORT); 
 	inet_aton(server_address,&my_sock_addr.sin_addr);
 	strcpy(BUFFER,filepath);
-	connect(tcp_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
+	connect(co_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
 	
 	size_t send_byte = 0;
 	while (send_byte < strlen(filepath)){
-		send_byte += send(tcp_socket_fd,BUFFER,strlen(BUFFER),MSG_MORE);
+		send_byte += send(co_socket_fd,BUFFER,strlen(BUFFER),MSG_MORE);
 	}
-	send_byte += send(tcp_socket_fd,"\0",1,MSG_CONFIRM);
+	send_byte += send(co_socket_fd,"\0",1,MSG_CONFIRM);
 	int cur_recv;
 
 	do {		
-		cur_recv += recv(tcp_socket_fd,BUFFER,strlen(BUFFER),0);
+		cur_recv += recv(co_socket_fd,BUFFER,strlen(BUFFER),0);
 		if (cur_recv>-1){
 			printf("%s",BUFFER);
 		}		
 		
 	}while (cur_recv!=0 || cur_recv==-1);
 	printf("\n");
-	close(tcp_socket_fd);
+	close(co_socket_fd);
 	return 0;
 }
 int connect_fileserver_udp(char *server_address, char *filepath){
@@ -88,11 +88,11 @@ int main(int argc, char *argv[]){
 	}
 	if (argv[1][0]=='-'){
 		if (argv[1][1]=='U'){
-			connect_fileserver_co(argv[2],argv[3],AF_UNIX);
+			connect_fileserver_co(argv[2],argv[3],AF_UNIX);//Unix-Socket
 		}else if (argv[1][1]=='u'){
-			connect_fileserver_udp(argv[2],argv[3]);
+			connect_fileserver_udp(argv[2],argv[3]);//UDP
 		}else if (argv[1][1]=='t'){
-			connect_fileserver_co(argv[2],argv[3],AF_INET);
+			connect_fileserver_co(argv[2],argv[3],AF_INET);//TCP
 		}else{
 			const char message[] ="Unbekanntes Protokoll.\n";
 			write(STDERR_FILENO,message,sizeof(message));
