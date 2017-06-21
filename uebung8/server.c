@@ -18,7 +18,7 @@
 #define PORT 1502
 #define BUF_SIZE 512
 
-int start_fileserver_unix()
+int start_fileserver_unix(char *server_address)
 {	
 	/*//Starte Server	
 	struct sockaddr_un server_addr;
@@ -71,7 +71,7 @@ int start_fileserver_unix()
 }
 
 char BUFFER[BUF_SIZE];
-int start_fileserver_udp(){
+int start_fileserver_udp(char *server_address){
 	int udp_socket_fd = socket(AF_INET,SOCK_DGRAM,17);
 	struct sockaddr_in server_sock_addr;
 	struct sockaddr_in client_sock_addr;
@@ -93,7 +93,28 @@ int start_fileserver_udp(){
 	return 0;
 }
 
-int main ()
-{
-	start_fileserver_udp();
-} 
+int start_fileserver_tcp(char *server_address){
+
+}
+
+int main(int argc, char *argv[]){
+	if (argc <= 1 || argc > 4){
+		const char message[] ="Server benötigt zwei Parameter.\n";
+		write(STDERR_FILENO,message,sizeof(message));
+		return EXIT_FAILURE;
+	}
+	if (argv[1][0]=='-'){
+		if (argv[1][1]=='U'){
+			start_fileserver_unix(argv[2]);
+		}else if (argv[1][1]=='u'){
+			start_fileserver_udp(argv[2]);
+		}else if (argv[1][1]=='t'){
+			start_fileserver_tcp(argv[2]);
+		}else{
+			const char message[] ="Unbekanntes Protokoll.\n";
+			write(STDERR_FILENO,message,sizeof(message));
+			return EXIT_FAILURE;
+		}
+	}
+	return EXIT_SUCCESS;
+}
