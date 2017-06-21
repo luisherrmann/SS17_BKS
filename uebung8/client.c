@@ -55,21 +55,25 @@ int connect_fileserver_co(char *server_address, char *filepath, int socketdomain
 }
 int connect_fileserver_udp(char *server_address, char *filepath){
 	int udp_socket_fd = socket(AF_INET,SOCK_DGRAM,17); // AR_INET for IPv4, SOCK_DGRAM for Datagram, 17 for UDP
-	struct sockaddr_in my_sock_addr;
-	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
-	my_sock_addr.sin_family = AF_INET;
-	my_sock_addr.sin_port = htons(PORT); 
-	inet_aton(server_address,&my_sock_addr.sin_addr);
+	struct sockaddr_in server_sock_addr;
+	
+	bzero(&server_sock_addr,sizeof(struct sockaddr_in));	
+	server_sock_addr.sin_family = AF_INET;
+	server_sock_addr.sin_port = htons(PORT); 
+	inet_aton(server_address,&server_sock_addr.sin_addr);
 	strcpy(BUFFER,filepath);
+	socklen_t addlen = sizeof(server_sock_addr);
 	size_t send_byte = 0;
 	while (send_byte < strlen(filepath)){
-		send_byte += sendto(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_MORE,(const struct sockaddr*)&my_sock_addr,sizeof(struct 		sockaddr));	
+		send_byte += sendto(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_MORE,(const struct sockaddr*)&server_sock_addr,addlen);	
 	}
-	send_byte += sendto(udp_socket_fd,(void*)&"\0", 1,MSG_CONFIRM,(struct sockaddr*)&my_sock_addr,sizeof(struct 				sockaddr));
+	printf("stop sending\n");
+	send_byte += sendto(udp_socket_fd,(void*)&"\0", 1,MSG_CONFIRM,(struct sockaddr*)&server_sock_addr,addlen);
+	printf("Confirmed\n");
 	int cur_recv;
 
 	do {	
-		cur_recv += recvfrom(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_WAITALL,(struct sockaddr*)&my_sock_addr, NULL);
+		cur_recv += recvfrom(udp_socket_fd,BUFFER, strlen(BUFFER),MSG_WAITALL,(struct sockaddr*)&server_sock_addr, &addlen);
 		if (cur_recv>-1){
 			printf("%s",BUFFER);
 		}		
