@@ -24,11 +24,9 @@
 #define BUF_SIZE 512
 #define PORT 1502
 char BUFFER[BUF_SIZE];
-int connect_fileserver_unix(char *server_address, char *filepath){
-	return 0;
-}
-int connect_fileserver_tcp(char *server_address, char *filepath){
-	int tcp_socket_fd = socket(AF_INET,SOCK_STREAM,0);
+
+int connect_fileserver_co(char *server_address, char *filepath, int socketdomain){
+	int tcp_socket_fd = socket(socketdomain,SOCK_STREAM,0);
 	struct sockaddr_in my_sock_addr;
 	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
 	my_sock_addr.sin_family = AF_INET;
@@ -90,11 +88,11 @@ int main(int argc, char *argv[]){
 	}
 	if (argv[1][0]=='-'){
 		if (argv[1][1]=='U'){
-			connect_fileserver_unix(argv[2],argv[3]);
+			connect_fileserver_co(argv[2],argv[3],AF_UNIX);
 		}else if (argv[1][1]=='u'){
 			connect_fileserver_udp(argv[2],argv[3]);
 		}else if (argv[1][1]=='t'){
-			connect_fileserver_tcp(argv[2],argv[3]);
+			connect_fileserver_co(argv[2],argv[3],AF_INET);
 		}else{
 			const char message[] ="Unbekanntes Protokoll.\n";
 			write(STDERR_FILENO,message,sizeof(message));
