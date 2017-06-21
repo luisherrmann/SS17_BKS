@@ -7,10 +7,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include <semaphore.h>
+
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define PORT 1502
 #define BUF_SIZE 512
@@ -73,24 +76,24 @@ int start_fileserver_udp(){
 	struct sockaddr_in server_sock_addr;
 	struct sockaddr_in client_sock_addr;
 	socklen_t socketsize;
-	bzero(&server_sock_addr, sizeof(struct sockaddr_in));
-	my_sock_addr.sin_family = AF_INET;
-	my_sock_addr.sin_port = htons(PORT);
-	my_sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	if(bind(udp_socket_fd, (sockaddr_in *) &client_sock_addr, &socketsize) == -1){
+	memset(&server_sock_addr, '\0', sizeof(struct sockaddr_in));
+	server_sock_addr.sin_family = AF_INET;
+	server_sock_addr.sin_port = htons(PORT);
+	server_sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	if(bind(udp_socket_fd, (struct sockaddr *) &server_sock_addr, sizeof(struct sockaddr_in)) == -1){
 		fprintf(stderr, "Error binding to port");
 		return 0;
 	}
-	listen(upd_socket_fd,3);
+	listen(udp_socket_fd,3);
 	int client_socket;
 	//Stelle Verbindung mit Client her
-	if((client_socket = accept(udp_socket_fd, (sockaddr_in *) &client_sock_addr, &socketsize) == -1){
+	if((client_socket = accept(udp_socket_fd, (struct sockaddr *) &client_sock_addr, &socketsize)) == -1){
 		fprintf(stderr, "Error establishing connection");
 		return 0;
 	}
 	char* client_message = malloc(BUF_SIZE);
 	//Lese solange Socket nicht leer ist.
-	recv(client_socket, BUFFER, BUF_SIZE);
+	recv(client_socket, BUFFER, BUF_SIZE, 0);
 	fprintf(stdout, "Message received: %s", BUFFER);
 	close(udp_socket_fd);
 	return 0;
