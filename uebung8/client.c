@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include <sys/un.h>
 // alte includes
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -29,8 +29,50 @@ struct data_packet{
 	char buffer[BUF_SIZE];
 };
 struct data_packet *my_data;
-int connect_fileserver_co(char *server_address, char *filepath, int socketdomain){
-	int co_socket_fd = socket(socketdomain,SOCK_STREAM,0);
+
+int connect_fileserver_unix(char *server_path, char *filepath){
+
+	int unix_socket_fd = socket(AF_LOCAL,SOCK_STREAM,0);
+
+	struct sockaddr_un my_sock_addr;
+	bzero(&my_sock_addr,sizeof(struct sockaddr_un));	
+	my_sock_addr.sun_family = AF_LOCAL;
+
+  	strcpy(my_sock_addr.sun_path, server_path);
+
+	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
+
+	bzero(my_data->buffer,BUF_SIZE);
+
+	strcpy(my_data->buffer,filepath);
+		printf("Connection\n");
+	my_data->len=sizeof(size_t)+strlen(filepath);
+	connect(unix_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
+
+	size_t send_byte = 0;
+	while (send_byte < my_data->len){
+		send_byte += send(unix_socket_fd,my_data->buffer,my_data->len,0);
+	}
+	send_byte += send(unix_socket_fd,"\0",1,MSG_CONFIRM);
+	
+	bzero(my_data->buffer, BUF_SIZE);
+	int cur_recv =0;
+	int recv_bytes = 0;
+	my_data->len=(size_t)BUF_SIZE;
+	
+	do {		
+		cur_recv = recv(unix_socket_fd,my_data,my_data->len,0);
+
+		recv_bytes+=cur_recv;
+		
+	}while (recv_bytes<my_data->len || cur_recv<0);
+	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
+	close(unix_socket_fd);
+	return 0;
+}
+
+int connect_fileserver_tcp(char *server_address, char *filepath){
+	int tcp_socket_fd = socket(AF_INET,SOCK_STREAM,0);
 	struct sockaddr_in my_sock_addr;
 	bzero(&my_sock_addr,sizeof(struct sockaddr_in));	
 	my_sock_addr.sin_family = AF_INET;
@@ -41,13 +83,13 @@ int connect_fileserver_co(char *server_address, char *filepath, int socketdomain
 	bzero(my_data->buffer,BUF_SIZE);
 	strcpy(my_data->buffer,filepath);
 	my_data->len=sizeof(size_t)+strlen(filepath);
-	connect(co_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
+	connect(tcp_socket_fd,(const struct sockaddr*)&my_sock_addr, sizeof(struct sockaddr)); 
 	
 	size_t send_byte = 0;
 	while (send_byte < my_data->len){
-		send_byte += send(co_socket_fd,my_data->buffer,my_data->len,0);
+		send_byte += send(tcp_socket_fd,my_data->buffer,my_data->len,0);
 	}
-	send_byte += send(co_socket_fd,"\0",1,MSG_CONFIRM);
+	send_byte += send(tcp_socket_fd,"\0",1,MSG_CONFIRM);
 	
 	bzero(my_data->buffer, BUF_SIZE);
 	int cur_recv =0;
@@ -55,13 +97,13 @@ int connect_fileserver_co(char *server_address, char *filepath, int socketdomain
 	my_data->len=(size_t)BUF_SIZE;
 	
 	do {		
-		cur_recv = recv(co_socket_fd,my_data,my_data->len,0);
+		cur_recv = recv(tcp_socket_fd,my_data,my_data->len,0);
 
 		recv_bytes+=cur_recv;
 		
 	}while (recv_bytes<my_data->len || cur_recv<0);
 	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
-	close(co_socket_fd);
+	close(tcp_socket_fd);
 	return 0;
 }
 int connect_fileserver_udp(char *server_address, char *filepath){
@@ -109,11 +151,11 @@ int main(int argc, char *argv[]){
 	}
 	if (argv[1][0]=='-'){
 		if (argv[1][1]=='U'){
-			connect_fileserver_co(argv[2],argv[3],AF_UNIX);//Unix-Socket
+			connect_fileserver_unix(argv[2],argv[3]);//Unix-Socket
 		}else if (argv[1][1]=='u'){
 			connect_fileserver_udp(argv[2],argv[3]);//UDP
 		}else if (argv[1][1]=='t'){
-			connect_fileserver_co(argv[2],argv[3],AF_INET);//TCP
+			connect_fileserver_tcp(argv[2],argv[3]);//TCP
 		}else{
 			const char message[] ="Unbekanntes Protokoll.\n";
 			write(STDERR_FILENO,message,sizeof(message));
