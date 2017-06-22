@@ -45,18 +45,22 @@ int connect_fileserver_co(char *server_address, char *filepath, int socketdomain
 	
 	size_t send_byte = 0;
 	while (send_byte < my_data->len){
-		send_byte += send(co_socket_fd,my_data->buffer,my_data->len,MSG_MORE);
+		send_byte += send(co_socket_fd,my_data->buffer,my_data->len,0);
 	}
 	send_byte += send(co_socket_fd,"\0",1,MSG_CONFIRM);
-	int cur_recv;
-
-	do {		
-		cur_recv += recv(co_socket_fd,my_data->buffer,my_data->len,0);
-
 	
+	bzero(my_data->buffer, BUF_SIZE);
+	int cur_recv =0;
+	int recv_bytes = 0;
+	my_data->len=(size_t)BUF_SIZE;
+	
+	do {		
+		cur_recv = recv(co_socket_fd,my_data,my_data->len,0);
+
+		recv_bytes+=cur_recv;
 		
-	}while (cur_recv!=0 || cur_recv==-1);
-	printf("\n");
+	}while (recv_bytes<my_data->len || cur_recv<0);
+	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
 	close(co_socket_fd);
 	return 0;
 }
@@ -85,7 +89,7 @@ int connect_fileserver_udp(char *server_address, char *filepath){
 	bzero(my_data->buffer, BUF_SIZE);
 	int cur_recv =0;
 	int recv_bytes = 0;
-	//recvfrom(udp_socket_fd, BUFFER, BUF_SIZE,MSG_WAITALL, (struct sockaddr *)&server_sock_addr, &addlen);
+	
 	my_data->len=(size_t)BUF_SIZE;
 	do {	
 		cur_recv = recvfrom(udp_socket_fd,my_data, my_data->len,MSG_WAITALL,(struct sockaddr*)&server_sock_addr, &addlen);
