@@ -57,7 +57,7 @@ int connect_fileserver_unix(char *server_path, char *filepath){
 	
 	bzero(my_data->buffer, BUF_SIZE);
 	int cur_recv =0;
-	int recv_bytes = 0;
+	size_t recv_bytes = 0;
 	my_data->len=(size_t)BUF_SIZE;
 	
 	do {		
@@ -66,7 +66,7 @@ int connect_fileserver_unix(char *server_path, char *filepath){
 		recv_bytes+=cur_recv;
 		
 	}while (recv_bytes<my_data->len || cur_recv<0);
-	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
+	printf("Message:%s\n",my_data->buffer);
 	close(unix_socket_fd);
 	return 0;
 }
@@ -93,7 +93,7 @@ int connect_fileserver_tcp(char *server_address, char *filepath){
 	
 	bzero(my_data->buffer, BUF_SIZE);
 	int cur_recv =0;
-	int recv_bytes = 0;
+	size_t recv_bytes = 0;
 	my_data->len=(size_t)BUF_SIZE;
 	
 	do {		
@@ -102,7 +102,7 @@ int connect_fileserver_tcp(char *server_address, char *filepath){
 		recv_bytes+=cur_recv;
 		
 	}while (recv_bytes<my_data->len || cur_recv<0);
-	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
+	printf("Message:%s\n",my_data->buffer);
 	close(tcp_socket_fd);
 	return 0;
 }
@@ -130,7 +130,7 @@ int connect_fileserver_udp(char *server_address, char *filepath){
 	printf("Confirmed\n");
 	bzero(my_data->buffer, BUF_SIZE);
 	int cur_recv =0;
-	int recv_bytes = 0;
+	size_t recv_bytes = 0;
 	
 	my_data->len=(size_t)BUF_SIZE;
 	do {	
@@ -138,13 +138,13 @@ int connect_fileserver_udp(char *server_address, char *filepath){
 		recv_bytes+=cur_recv;	
 		printf("recv:%i",cur_recv);
 	}while (recv_bytes<my_data->len || cur_recv<0);
-	printf("cur_recv:%i\n Message:%s\n",recv_bytes,my_data->buffer);
+	printf("Message:%s\n",my_data->buffer);
 	close(udp_socket_fd);
 
 	return 0;
 }
 int main(int argc, char *argv[]){
-	if (argc <= 1 || argc > 4){
+	if (argc != 4){
 		const char message[] ="Client benötigt drei Parameter.\n";
 		write(STDERR_FILENO,message,sizeof(message));
 		return EXIT_FAILURE;

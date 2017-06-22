@@ -23,7 +23,7 @@ struct data_packet{
 	char buffer[BUF_SIZE];
 };
 struct data_packet *my_data;
-int start_fileserver_unix(char *server_path){//TODO: tcp -> unix
+int start_fileserver_unix(char *server_path){
 	int unix_socket_fd = socket(AF_LOCAL,SOCK_STREAM,0);
 	struct sockaddr_un server_sock_addr;
 	struct sockaddr_un client_sock_addr;
@@ -31,6 +31,8 @@ int start_fileserver_unix(char *server_path){//TODO: tcp -> unix
 	bzero(&client_sock_addr,sizeof(struct sockaddr_un));	
 	memset(&server_sock_addr, '\0', sizeof(struct sockaddr_un));
 	server_sock_addr.sun_family = AF_LOCAL;
+	
+	unlink(server_path);	
 	strcpy(server_sock_addr.sun_path, server_path);	
 
 	socklen_t addlen = sizeof(server_sock_addr);
@@ -41,25 +43,27 @@ int start_fileserver_unix(char *server_path){//TODO: tcp -> unix
 		return 0;
 	}
 	listen(unix_socket_fd,3);
-	
-	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
-	bzero(my_data->buffer,BUF_SIZE);
-	int client_socket = accept(unix_socket_fd,(struct sockaddr *)&client_sock_addr, &addrlen);
+	while (1){
+		my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
+		bzero(my_data->buffer,BUF_SIZE);
+		int client_socket = accept(unix_socket_fd,(struct sockaddr *)&client_sock_addr, &addrlen);
 
-	//Lese solange Socket nicht leer ist.
-	recv(client_socket, my_data->buffer, BUF_SIZE,0);
+		//Lese solange Socket nicht leer ist.
+		recv(client_socket, my_data->buffer, BUF_SIZE,0);
 
-	fprintf(stdout, "Message received: %s\n", my_data->buffer);
-	bzero(my_data->buffer, BUF_SIZE);
-	strcpy(my_data->buffer,"Hello World from server!\n");
-	size_t send_byte = 0;
-	my_data->len=strlen(my_data->buffer)+sizeof(size_t);
-	while(send_byte < my_data->len){
-		send_byte += send(client_socket, my_data, my_data->len,MSG_MORE); 
+		fprintf(stdout, "Message received: %s\n", my_data->buffer);
+		bzero(my_data->buffer, BUF_SIZE);
+		strcpy(my_data->buffer,"Hello World from server!\n");
+		size_t send_byte = 0;
+		my_data->len=strlen(my_data->buffer)+sizeof(size_t);
+		while(send_byte < my_data->len){
+			send_byte += send(client_socket, my_data, my_data->len,0); 
+		}
+
+		close(client_socket);
+		free(my_data);
 	}
-	send_byte += send(client_socket, "\0", 1,MSG_CONFIRM); 
-	printf("Send %i\n",send_byte);
-	close(client_socket);
+	
 	close(unix_socket_fd);
 	return 0;
 }
@@ -83,25 +87,27 @@ int start_fileserver_tcp(char *server_address)
 		return 0;
 	}
 	listen(tcp_socket_fd,3);
-	
-	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
-	bzero(my_data->buffer,BUF_SIZE);
-	int client_socket = accept(tcp_socket_fd,(struct sockaddr *)&client_sock_addr, &addrlen);
+	while(1){
+		my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
+		bzero(my_data->buffer,BUF_SIZE);
+		int client_socket = accept(tcp_socket_fd,(struct sockaddr *)&client_sock_addr, &addrlen);
 
-	//Lese solange Socket nicht leer ist.
-	recv(client_socket, my_data->buffer, BUF_SIZE,0);
+		//Lese solange Socket nicht leer ist.
+		recv(client_socket, my_data->buffer, BUF_SIZE,0);
 
-	fprintf(stdout, "Message received: %s\n", my_data->buffer);
-	bzero(my_data->buffer, BUF_SIZE);
-	strcpy(my_data->buffer,"Hello World from server!\n");
-	size_t send_byte = 0;
-	my_data->len=strlen(my_data->buffer)+sizeof(size_t);
-	while(send_byte < my_data->len){
-		send_byte += send(client_socket, my_data, my_data->len,MSG_MORE); 
+		fprintf(stdout, "Message received: %s\n", my_data->buffer);
+		bzero(my_data->buffer, BUF_SIZE);
+		strcpy(my_data->buffer,"Hello World from server!\n");
+		size_t send_byte = 0;
+		my_data->len=strlen(my_data->buffer)+sizeof(size_t);
+		while(send_byte < my_data->len){
+			send_byte += send(client_socket, my_data, my_data->len,MSG_MORE); 
+		}
+		send_byte += send(client_socket, "\0", 1,MSG_CONFIRM); 
+
+		close(client_socket);
+		free(my_data);
 	}
-	send_byte += send(client_socket, "\0", 1,MSG_CONFIRM); 
-	printf("Send %i\n",send_byte);
-	close(client_socket);
 	close(tcp_socket_fd);
 	return 0;
 }
@@ -123,22 +129,24 @@ int start_fileserver_udp(char *server_address){
 		return 0;
 	}
 	listen(udp_socket_fd,3);
-
-	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
-	bzero(my_data->buffer,BUF_SIZE);
+	while(1){
+		my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
+		bzero(my_data->buffer,BUF_SIZE);
 	
-	//Lese solange Socket nicht leer ist.
-	recvfrom(udp_socket_fd, my_data->buffer, BUF_SIZE,MSG_WAITALL, (struct sockaddr *)&client_sock_addr, &addrlen);
-	fprintf(stdout, "Message received: %s\n", my_data->buffer);
-	bzero(my_data->buffer, BUF_SIZE);
-	strcpy(my_data->buffer,"Hello World from server!\n");
-	size_t send_byte = 0;
-	my_data->len=strlen(my_data->buffer)+sizeof(size_t);
-	while(send_byte < my_data->len){
-		send_byte += sendto(udp_socket_fd, my_data, my_data->len,MSG_MORE, (struct sockaddr*) &client_sock_addr, addrlen); 
-	}
-	send_byte += sendto(udp_socket_fd, "\0", 1,MSG_CONFIRM, (struct sockaddr*) &client_sock_addr, addrlen); 
-	printf("Send %i\n",send_byte);
+		//Lese solange Socket nicht leer ist.
+		recvfrom(udp_socket_fd, my_data->buffer, BUF_SIZE,MSG_WAITALL, (struct sockaddr *)&client_sock_addr, &addrlen);
+		fprintf(stdout, "Message received: %s\n", my_data->buffer);
+		bzero(my_data->buffer, BUF_SIZE);
+		strcpy(my_data->buffer,"Hello World from server!\n");
+		size_t send_byte = 0;
+		my_data->len=strlen(my_data->buffer)+sizeof(size_t);
+		while(send_byte < my_data->len){
+			send_byte += sendto(udp_socket_fd, my_data, my_data->len,MSG_MORE, (struct sockaddr*) &client_sock_addr, addrlen); 
+		}
+		send_byte += sendto(udp_socket_fd, "\0", 1,MSG_CONFIRM, (struct sockaddr*) &client_sock_addr, addrlen); 
+
+		free(my_data);
+		}
 	close(udp_socket_fd);
 	return 0;
 }
