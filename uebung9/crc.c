@@ -5,13 +5,6 @@
 #include <sys/wait.h>
 #include <string.h>
 
-int wordcount(FILE *source){
-	while((curr = fgetc(source)) != EOF){
-}
-
-
-
-
 int main(int argc, char* argv[]){
 	FILE *source = fopen(argv[i],"r+");
 	if(source == NULL)
