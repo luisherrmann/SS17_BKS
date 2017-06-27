@@ -1,0 +1,94 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{minted}
+\usepackage{mdframed}
+\usepackage{courier}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\begin{document}
+	
+	\setlength{\parindent}{0em} 
+	
+	\definecolor{bg}{RGB}{230,230,230}
+	\newcommand{\inputmintedframed}[2]{
+		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+			\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
+	
+	\hrulefill
+	\begin{center}
+		\bfseries % Fettdruck einschalten
+		\sffamily % Serifenlose Schrift
+		\begin{huge}
+			Betriebs- und Kommunikationssysteme
+		\end{huge}\\
+		\begin{Large}
+			Sommersemester 2017, 9. Übungsblatt
+		\end{Large}\\
+		\begin{small}
+			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
+		\end{small}
+		
+		\vspace{-10pt}
+	\end{center}
+	\hrulefill
+	
+\section*{Aufgabe 1}
+\subsection*{a) Aufgaben des Data-Link-Layers (Sicherungsschicht)}
+Data-Link-Layers bekommen als 2-Schicht von den physical-Layers (Schicht 1) (Bit-Übertragungsschicht) einen Strom von Bits und IP-Pakete von dem Network layer(Schicht 3). Die Aufgaben des Data-Link-Layers sind insbesondere:
+\begin{enumerate}
+	\item Fehler erkennen und korrigieren
+	\item Transparente Übertragung von Daten
+	\item Rahmen (Frames)
+	\begin{enumerate}
+		\item Rahmen für Bitstreams zum physical-layer bilden
+		\item Rahmen in Bitstreams des Network layers erkennen 
+		\item Trailer mit Prüfsumme (Frame check sequence FCS) und ggfl. Header hinzufügen
+		\item Bitstuffing der Nutzdaten via Hardware, um Flags für den Rahmen von Nutzdaten zu unterscheiden
+	\end{enumerate}
+	\item Ermitteln der best möglichen Übertragungsgeschwindigkeit zum nächsten Host (z.B. Router) (Flow control)
+	\item Verbindung zum Host aufbauen/schließen
+	
+\end{enumerate}
+\subsection{b) Angabe des Bitstrings der Ascii-Zeichen ''?~''}
+Ascii Wert von ? ist: 0x3F = 0011 1111 \\
+Ascii Wert von ~ ist: 0x7E = 0111 1110 \\
+\(\Rightarrow \) der Bitstring der Ascii-Zeichen ''?~'' lautet ''0011 1111 0111 1110''
+\subsubsection*{Ergänzung um die CRC16 Prüfsumme}
+Das CRC16 IBM Prüfpolynom lauten \(x^{16}+x^{15}+x^2 + 1 \Rightarrow \) 1 1000 0000 0000 0101 \\
+  \begin{align*}
+&11 1111 0111 1110 0000 0000 0000 0000 \ / \ 1 1000 0000 0000 0101 =  10010010001001000101&\\
+&11 0000 0000 0000 101&\\
+   &1111 0111 1101 0110 0&\\
+   &1100 0000 0000 0010 1&\\
+     &11 0111 1101 0010 100&\\
+	 &11 0000 0000 0000 101&\\
+		&0111 1101 0001 1110 00&\\
+		 &110 0000 0000 0001 01&\\
+		   &1 1101 0001 1101 0100&\\
+		   &1 1000 0000 0000 0101&\\
+		      &101 0001 1100 1111 000&\\
+		       &11 0000 0000 0000 101&\\
+		       &10 0001 1100 1110 0110&\\
+		        &1 1000 0000 0000 0101&\\
+		        &0 1001 1100 1110 0001&\\
+		        \end{align*}
+		        \(\Rightarrow\) CRC16 Prüfsumme ist 1001 1100 1110 0001\\
+		        \(\Rightarrow\) Bitstring:0011 1111 0111 1110 1001 1100 1110 0001
+\subsubsection*{Bistuffing}
+Immer nach fünf Einerbits hintereinander wird eine Null eingefügt
+ \(\Rightarrow\) Bitstring: 0011 111\textbf{0}1 0111 11\textbf{0}10 1001 1100 1110 0001
+\subsubsection*{Manchester Codierung}
+\includegraphics[width=1.0\textwidth]{manchester.png}
+\subsubsection*{Amplitudenmodulation}
+%\includegraphics[width=1.0\textwidth]{manchester.png}
+\section*{Aufgabe 2}
+
+
+\end{document}
