@@ -13,27 +13,21 @@
 //Expects: FILE struct pointer pointing to head of file
 //Returns: Result of crc operation applied on file read with file descriptor
 int crc_calc(FILE* source){
-	fseek(source, 0, SEEK_END);
-	int filelen = ftell(source);
-	rewind(source);
 	int generator_polynomial = (1 << 16) + (1 << 15) + (1 << 2) + 1;
 	int dividend = 0;
 	//Since we insert two bytes before starting, we can always fetch two characters
 	for(int i=0; i<2; i++){
 		char byte = fgetc(source);
-		fprintf(stdout, "Character read: %c\n", byte);
-		dividend = (((int) dividend) << 8) + (uint32_t) byte;
-		fprintf(stdout, "%x\n", dividend);
+		dividend = (((int) dividend) << 8) + (int) byte;
 	}
 	char buffer_byte;
 	
 	//Start polynomial division
 	int bit_count = 8;
 	int eof_reached = 0;
-	/*while(ftell(source) <= filelen)*/do{
+	do{
 		if(bit_count == 8){
 			buffer_byte = fgetc(source);
-			fprintf(stdout, "Fetched next character: %c %x\n", buffer_byte, buffer_byte);
 			if(buffer_byte == EOF){
 				eof_reached = 1;
 				fprintf(stdout, "EOF reached!");
@@ -41,23 +35,17 @@ int crc_calc(FILE* source){
 			bit_count = 0;
 		}
 		if(eof_reached == 0){
-			int next_bit = (uint32_t)((buffer_byte & (1 << (7 - bit_count))) >> (7 - bit_count));
-			fprintf(stdout, "Next bit: %x ", next_bit);
+			int next_bit = (int)((buffer_byte & (1 << (7 - bit_count))) >> (7 - bit_count));
 			dividend = (dividend << 1) + next_bit;
 			//If the first bit of the dividend is 0, fit 0, else fit 1
 			if((dividend >> 16) == 1){
-				fprintf(stdout, "1, Shifted:%x ", dividend);
 			       	dividend = dividend ^ generator_polynomial;
-				fprintf(stdout, "Result:%x\n", dividend);
 			}
 			else{
-				fprintf(stdout, "0, Shifted:%x ", dividend);
 			       	dividend = dividend ^ 0;
-				fprintf(stdout, "Result:%x\n", dividend);
 			}
 			bit_count++;
 		}
-		fprintf(stdout, "%x\n", dividend);
 	}while(eof_reached == 0);
 	return dividend;
 }
@@ -70,7 +58,7 @@ int main(int argc, char **argv){
 			char *filename = malloc(fn_len - 3);
 			strncpy(filename, argv[1], fn_len-4);
 			filename[fn_len-3] = '\0';
-			FILE *source = fopen(argv[1],"w+");
+			FILE *source = fopen(argv[1],"r+");
 			if(source == NULL){
 				fprintf(stderr, "An error has occured while trying to read!\n");
 				if(errno == ENOENT){
@@ -114,14 +102,10 @@ int main(int argc, char **argv){
 			filelen = ftell(source);
 			fprintf(stdout, "Length: %d\n", filelen);
 			rewind(source);
-			fprintf(stdout, "Current position: %d\n", (int) ftell(source));
 			int crc = crc_calc(source);
-			fseek(source, -2, SEEK_END);
-			int code1 = (char) (crc >> 8);
-			int code2 = crc & 0xff;
-			fputc(code1, source);
-			fputc(code2, source);
-			fprintf(stdout, "Append to file: %d: %x %x\n", crc, code1, code2);
+			char code1 = (char) (crc >> 8);
+			char code2 = (char) (crc & 0xff);
+			ftruncate(fileno(source), (off_t) filelen-2);
 			fprintf(source, "%c%c", code1, code2);
 			fprintf(stdout, "The checksum calculated is: %x\n", crc);
 			fclose(source);
