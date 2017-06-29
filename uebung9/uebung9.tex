@@ -88,5 +88,13 @@ Immer nach fünf Einerbits hintereinander wird eine Null eingefügt
 \includegraphics[width=1.0\textwidth]{amplitude.png}
 \section*{Aufgabe 2}
 
+\subsection*{c}
+Für die ersten 17-Bit unserer ersten Datei (gen1) wählen wir die bitweise Negation des Polynoms und ''füllen'' das letzte Byte mit Nullen und am Schluss einer 1 auf. \\ \\
+
+001111111111110100000001 \(\Rightarrow \) 0x3f 0xfd 0x01 \(\Rightarrow \) 0x8D05 \\ \\
+Für die zweite Datei nehmen wir die erste Datei (gen2) und führen ein bitweises xor mit dem Polynom auf den ersten 17-Bits aus und erhalten so 17 mal die 1. Da im ersten Schritt der Polynomdivision auf der zweiten Datei ein xor auf den ersten 17-Bits ausgeführt wird, erhalten wir diesem Schritt die erste Datei. Da der CRC-Hash nur der Rest der Polynomdivision ist, sind die Hashes identisch.\\ \\
+
+111111111111111110000001 \(\Rightarrow \) 0xff 0xff 0x81 \(\Rightarrow \) 0x8D05 \\ \\
+
 
 \end{document}
