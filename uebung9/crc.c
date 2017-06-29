@@ -17,10 +17,12 @@ int crc_calc(FILE* source){
 	int dividend = 0;
 	//Since we insert two bytes before starting, we can always fetch two characters
 	for(int i=0; i<2; i++){
-		char byte = fgetc(source);
+		int byte = fgetc(source);
 		dividend = (((int) dividend) << 8) + (int) byte;
+		fprintf(stdout, "%x ", byte);
 	}
-	char buffer_byte;
+	//TODO: char buffer_byte;
+	int buffer_byte;
 	
 	//Start polynomial division
 	int bit_count = 8;
@@ -28,13 +30,15 @@ int crc_calc(FILE* source){
 	do{
 		if(bit_count == 8){
 			buffer_byte = fgetc(source);
+			fprintf(stdout, "%x ", buffer_byte);
 			if(buffer_byte == EOF){
 				eof_reached = 1;
 			}
 			bit_count = 0;
 		}
 		if(eof_reached == 0){
-			int next_bit = (int)((buffer_byte & (1 << (7 - bit_count))) >> (7 - bit_count));
+			//TODO: int next_bit = (int)((buffer_byte & (1 << (7 - bit_count))) >> (7 - bit_count));
+			int next_bit = (buffer_byte & (1 << (7 - bit_count)) >> (7 - bit_count));
 			dividend = (dividend << 1) + next_bit;
 			//If the first bit of the dividend is 0, fit 0, else fit 1
 			if((dividend >> 16) == 1){
