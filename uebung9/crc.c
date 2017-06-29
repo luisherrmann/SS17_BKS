@@ -30,7 +30,6 @@ int crc_calc(FILE* source){
 			buffer_byte = fgetc(source);
 			if(buffer_byte == EOF){
 				eof_reached = 1;
-				fprintf(stdout, "EOF reached!");
 			}
 			bit_count = 0;
 		}
@@ -95,12 +94,10 @@ int main(int argc, char **argv){
 			//Append 16 0's to end of file and start crc at initial position.
 			fseek(source, 0, SEEK_END);
 			int filelen = ftell(source);
-			fprintf(stdout, "Length: %d\n", filelen);
 			fprintf(source, "%c%c", 0, 0);
 			rewind(source);
 			fseek(source, 0, SEEK_END);
 			filelen = ftell(source);
-			fprintf(stdout, "Length: %d\n", filelen);
 			rewind(source);
 			int crc = crc_calc(source);
 			char code1 = (char) (crc >> 8);
