@@ -17,10 +17,10 @@ int crc_calc(FILE* source){
 	int dividend = 0;
 	//Since we insert two bytes before starting, we can always fetch two characters
 	for(int i=0; i<2; i++){
-		char byte = fgetc(source);
+		unsigned char byte = fgetc(source);
 		dividend = (((int) dividend) << 8) + (int) byte;
 	}
-	char buffer_byte;
+	unsigned char buffer_byte;
 	
 	//Start polynomial division
 	int bit_count = 8;
@@ -28,7 +28,7 @@ int crc_calc(FILE* source){
 	do{
 		if(bit_count == 8){
 			buffer_byte = fgetc(source);
-			if(buffer_byte == EOF){
+			if((char)buffer_byte == EOF){
 				eof_reached = 1;
 			}
 			bit_count = 0;
@@ -100,8 +100,8 @@ int main(int argc, char **argv){
 			filelen = ftell(source);
 			rewind(source);
 			int crc = crc_calc(source);
-			char code1 = (char) (crc >> 8);
-			char code2 = (char) (crc & 0xff);
+			unsigned char code1 = (unsigned char) (crc >> 8);
+			unsigned char code2 = (unsigned char) (crc & 0xff);
 			ftruncate(fileno(source), (off_t) filelen-2);
 			fprintf(source, "%c%c", code1, code2);
 			fprintf(stdout, "The checksum calculated is: %x\n", crc);
