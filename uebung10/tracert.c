@@ -60,7 +60,24 @@ int send_udp_packet(char *server_address, int ttl){
 	printf("Confirmed\n");
 	bzero(my_data->buffer, BUF_SIZE);	
 	close(udp_socket_fd);
-
+	
+	return 0;
+}
+int listen_raw_icmp(char *server_address){
+	int raw_socket_fd=socket(AF_INET,SOCK_RAW,IPPROTO_ICMP);
+	struct sockaddr_in server_sock_addr;
+	struct sockaddr_in client_sock_addr;
+	socklen_t addrlen = sizeof(struct sockaddr_in);
+	bzero(&client_sock_addr,sizeof(struct sockaddr_in));	
+	memset(&server_sock_addr, '\0', sizeof(struct sockaddr_in));
+	server_sock_addr.sin_family = AF_INET;
+	server_sock_addr.sin_port = htons(PORT);
+	server_sock_addr.sin_addr.s_addr = inet_addr(server_address);
+	socklen_t addlen = sizeof(server_sock_addr);
+	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
+	bzero(my_data->buffer,BUF_SIZE);
+	recvfrom(raw_socket_fd, my_data->buffer, BUF_SIZE,0, (struct sockaddr *)&client_sock_addr, &addrlen);
+	fprintf(stdout, "Message received: %s\n", inet_ntoa(client_sock_addr.sin_addr));	
 	return 0;
 }
 int main(int argc, char *argv[]){
@@ -72,8 +89,8 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}
 	
-	send_udp_packet(argv[1],1);//UDP
-	
+	send_udp_packet(argv[1],5);//UDP
+	listen_raw_icmp("0.0.0.0");	
 	return EXIT_SUCCESS;
 }
 
