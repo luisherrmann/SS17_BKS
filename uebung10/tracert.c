@@ -30,20 +30,29 @@ struct data_packet{
 	char buffer[BUF_SIZE];
 };
 struct data_packet *my_data;
-
 int send_udp_packet(char *server_address, int ttl){
 	int udp_socket_fd = socket(AF_INET,SOCK_DGRAM,0); // AR_INET for IPv4, SOCK_DGRAM for Datagram, 17 for UDP
-	printf("%i\n",udp_socket_fd);	
+	if (udp_socket_fd ==-1){
+		fprintf(stderr,"Der Verbindungsaufbau fehlgeschlagen. Host: %s\n",server_address);
+
+		return -1;
+	}
 	struct sockaddr_in server_sock_addr;
 	
 	bzero(&server_sock_addr,sizeof(struct sockaddr_in));		
 	server_sock_addr.sin_family = AF_INET;
 	server_sock_addr.sin_port = htons(PORT); 
 		
-	inet_aton(server_address,&server_sock_addr.sin_addr);
-	
-	setsockopt(udp_socket_fd, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl));
-
+	int res = inet_aton(server_address,&server_sock_addr.sin_addr);
+	if (res ==0){
+		fprintf(stderr,"Die Adresse konnte nicht gelesen werden. %i Host: %s\n",res,server_address);
+		return -1;
+	}
+	res= setsockopt(udp_socket_fd, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl));
+	if (res ==-1){
+		fprintf(stderr,"TTL konnte nicht gesetzt werden. Host: %s\n",server_address);
+		return -1;
+	}
 	my_data = (struct data_packet*) malloc(sizeof(struct data_packet));
 	bzero(my_data->buffer,BUF_SIZE);
 	const char buf[] = "Hello World!";
@@ -51,20 +60,29 @@ int send_udp_packet(char *server_address, int ttl){
 	my_data->len=sizeof(size_t)+strlen(buf);
 
 	socklen_t addlen = sizeof(server_sock_addr);
-	size_t send_byte = 0;
-	while (send_byte < my_data->len){
+	int send_byte = 0;
+	while (send_byte < (int)my_data->len){
 		send_byte += sendto(udp_socket_fd,my_data->buffer, my_data->len-send_byte,MSG_MORE,(const struct sockaddr*)&server_sock_addr,addlen);	
 	}
-	printf("stop sending\n");
+	if (send_byte ==-1){
+		fprintf(stderr,"UDP-Paket konnte nicht gesendet werden. Host:%s\n",server_address);
+		return -1;
+	}
+	//printf("stop sending\n");
 	send_byte += sendto(udp_socket_fd,(void*)&"\0", 1,MSG_CONFIRM,(struct sockaddr*)&server_sock_addr,addlen);
-	printf("Confirmed\n");
+	//printf("Confirmed. %i Bytes send\n",send_byte);
 	bzero(my_data->buffer, BUF_SIZE);	
 	close(udp_socket_fd);
 	
 	return 0;
 }
-int listen_raw_icmp(char *server_address){
+int listen_raw_icmp(char *server_address,int ttl){
 	int raw_socket_fd=socket(AF_INET,SOCK_RAW,IPPROTO_ICMP);
+	if (raw_socket_fd ==-1){
+		fprintf(stderr,"Der Verbindungsaufbau fehlgeschlagen. Host: %s\n",server_address);
+
+		return -1;
+	}
 	struct sockaddr_in server_sock_addr;
 	struct sockaddr_in client_sock_addr;
 	socklen_t addrlen = sizeof(struct sockaddr_in);
@@ -76,8 +94,13 @@ int listen_raw_icmp(char *server_address){
 	socklen_t addlen = sizeof(server_sock_addr);
 	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
 	bzero(my_data->buffer,BUF_SIZE);
-	recvfrom(raw_socket_fd, my_data->buffer, BUF_SIZE,0, (struct sockaddr *)&client_sock_addr, &addrlen);
-	fprintf(stdout, "Message received: %s\n", inet_ntoa(client_sock_addr.sin_addr));	
+	int res = recvfrom(raw_socket_fd, my_data->buffer, BUF_SIZE,0, (struct sockaddr *)&client_sock_addr, &addrlen);
+	if (res ==-1){
+		fprintf(stderr,"Auf dem RAW-Socket konnten keine Daten gelesen werden. Host:%s\n",server_address);
+		return -1;
+	}
+//	fprintf(stdout, "Message received: %s\n", my_data->buffer);	
+	fprintf(stdout, "%i : %s\n", ttl,inet_ntoa(client_sock_addr.sin_addr));	
 	return 0;
 }
 int main(int argc, char *argv[]){
@@ -88,9 +111,11 @@ int main(int argc, char *argv[]){
 		write(STDERR_FILENO,message,sizeof(message));
 		return EXIT_FAILURE;
 	}
-	
-	send_udp_packet(argv[1],5);//UDP
-	listen_raw_icmp("0.0.0.0");	
+	for (int i = 1; i<15; i++){
+	send_udp_packet(argv[1],i);//UDP
+	listen_raw_icmp("0.0.0.0",i);	
+	}
+
 	return EXIT_SUCCESS;
 }
 
