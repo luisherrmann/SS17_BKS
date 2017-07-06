@@ -23,7 +23,24 @@
 #include <sys/mman.h>
 
 #define BUF_SIZE 512
-#define PORT 1502
+#define CLIENT_PORT 5309
+#define SERVER_PORT 1502
+
+struct icmphdr {
+	char iphdr[20];
+	//icmp header: 8byte
+	uint8_t type;
+	uint8_t code;
+	uint16_t checksum;
+	char rest[4];
+	//udp package: ip header: 20byte
+	char udp_iphdr[20];
+	//udp package: udp header: 64byte
+	uint16_t source;
+	uint16_t dest;
+	uint16_t len;
+	uint16_t check;
+};
 
 struct data_packet{
 	size_t len;
@@ -31,17 +48,23 @@ struct data_packet{
 };
 struct data_packet *my_data;
 int send_udp_packet(char *server_address, int ttl){
+	//Setze Socket-Adresse zwecks Wiedererkennung der ICMP-Pakete
+	struct sockaddr_in client_sock_addr;
+	bzero(&client_sock_addr, sizeof(struct sockaddr_in));
+	client_sock_addr.sin_family = AF_INET;
+	client_sock_addr.sin_port = htons(CLIENT_PORT);
+	//Öffne Socket und binde an Port
 	int udp_socket_fd = socket(AF_INET,SOCK_DGRAM,0); // AR_INET for IPv4, SOCK_DGRAM for Datagram, 17 for UDP
+	bind(udp_socket_fd, (struct sockaddr *) &client_sock_addr, sizeof(struct sockaddr_in));
 	if (udp_socket_fd ==-1){
 		fprintf(stderr,"Der Verbindungsaufbau fehlgeschlagen. Host: %s\n",server_address);
 
 		return -1;
 	}
-	struct sockaddr_in server_sock_addr;
-	
-	bzero(&server_sock_addr,sizeof(struct sockaddr_in));		
+	struct sockaddr_in server_sock_addr;	
+	bzero(&server_sock_addr, sizeof(struct sockaddr_in));		
 	server_sock_addr.sin_family = AF_INET;
-	server_sock_addr.sin_port = htons(PORT); 
+	server_sock_addr.sin_port = htons(SERVER_PORT); 
 		
 	int res = inet_aton(server_address,&server_sock_addr.sin_addr);
 	if (res ==0){
@@ -58,7 +81,6 @@ int send_udp_packet(char *server_address, int ttl){
 	const char buf[] = "Hello World!";
 	strcpy(my_data->buffer,buf); // egal
 	my_data->len=sizeof(size_t)+strlen(buf);
-
 	socklen_t addlen = sizeof(server_sock_addr);
 	int send_byte = 0;
 	while (send_byte < (int)my_data->len){
@@ -86,21 +108,28 @@ int listen_raw_icmp(char *server_address,int ttl){
 	struct sockaddr_in server_sock_addr;
 	struct sockaddr_in client_sock_addr;
 	socklen_t addrlen = sizeof(struct sockaddr_in);
-	bzero(&client_sock_addr,sizeof(struct sockaddr_in));	
-	memset(&server_sock_addr, '\0', sizeof(struct sockaddr_in));
+	bzero(&client_sock_addr, sizeof(struct sockaddr_in));	
+	bzero(&server_sock_addr, sizeof(struct sockaddr_in));
 	server_sock_addr.sin_family = AF_INET;
-	server_sock_addr.sin_port = htons(PORT);
+	server_sock_addr.sin_port = htons(SERVER_PORT);
 	server_sock_addr.sin_addr.s_addr = inet_addr(server_address);
 	socklen_t addlen = sizeof(server_sock_addr);
 	my_data = (struct data_packet*)malloc(sizeof(struct data_packet));
 	bzero(my_data->buffer,BUF_SIZE);
-	int res = recvfrom(raw_socket_fd, my_data->buffer, BUF_SIZE,0, (struct sockaddr *)&client_sock_addr, &addrlen);
-	if (res ==-1){
-		fprintf(stderr,"Auf dem RAW-Socket konnten keine Daten gelesen werden. Host:%s\n",server_address);
-		return -1;
+	int received = 0;
+	while(received == 0){//Listen until answer is received
+		int res = recvfrom(raw_socket_fd, my_data->buffer, BUF_SIZE,0, (struct sockaddr *)&client_sock_addr, &addrlen);
+		if (res ==-1){
+			fprintf(stderr,"Auf dem RAW-Socket konnten keine Daten gelesen werden. Host:%s\n",server_address);
+			return -1;
+		}
+		struct icmphdr *icmp_header = (struct icmphdr *) my_data->buffer;
+		if(ntohs(icmp_header->source) == CLIENT_PORT && ntohs(icmp_header->dest) == SERVER_PORT){
+			received = 1;
+			fprintf(stdout, "%i : %s\n", ttl,inet_ntoa(client_sock_addr.sin_addr));
+			fprintf(stdout, "Bytes: %d Source: %d Destination: %d\n", res, ntohs(icmp_header->source), ntohs(icmp_header->dest));
+		}
 	}
-//	fprintf(stdout, "Message received: %s\n", my_data->buffer);	
-	fprintf(stdout, "%i : %s\n", ttl,inet_ntoa(client_sock_addr.sin_addr));	
 	return 0;
 }
 int main(int argc, char *argv[]){
@@ -112,8 +141,8 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}
 	for (int i = 1; i<15; i++){
-	send_udp_packet(argv[1],i);//UDP
-	listen_raw_icmp("0.0.0.0",i);	
+		send_udp_packet(argv[1],i);//UDP
+		listen_raw_icmp("0.0.0.0",i);	
 	}
 
 	return EXIT_SUCCESS;
