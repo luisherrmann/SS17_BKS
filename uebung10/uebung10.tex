@@ -1,0 +1,65 @@
+\documentclass[numbers=noendperiod]{scrartcl}
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=0.75in, bottom=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{minted}
+\usepackage{mdframed}
+\usepackage{courier}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\begin{document}
+	
+	\setlength{\parindent}{0em} 
+	
+	\definecolor{bg}{RGB}{230,230,230}
+	\newcommand{\inputmintedframed}[2]{
+		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
+			\inputminted[mathescape,breaklines,linenos,numbersep=5pt,tabsize=3]{#1}{#2}
+	\end{mdframed}}
+	
+	\hrulefill
+	\begin{center}
+		\bfseries % Fettdruck einschalten
+		\sffamily % Serifenlose Schrift
+		\begin{huge}
+			Betriebs- und Kommunikationssysteme
+		\end{huge}\\
+		\begin{Large}
+			Sommersemester 2017, 10. Übungsblatt
+		\end{Large}\\
+		\begin{small}
+			Christoph Husemann, Luis Herrmann; Tutor: André Schröder; Mi 16:00-18:00
+		\end{small}
+		
+		\vspace{-10pt}
+	\end{center}
+	\hrulefill
+	
+\section*{Aufgabe 1}
+
+\begin{enumerate}
+	\item Das \textbf{Address Resolution Protocol} (ARP) ist ein Netzwerkprotokoll der Link Layer (Zuganggsschicht), welche es ermöglicht, eine IPv4-Netzwerkaddresse des Internet Layer (Internetschicht) auf eine physische Rechneraddresse (MAC-Addresse) abzubilden. Dies ist notwendig, da die IP-Pakete, über die zwei Rechner kommunizieren, in einen Ethernet-Frame verpacket werden, welcher zwecks Routing die MAC-Adresse des Senders (Source) und des Empfängers (Destination) benötigt, diese aber nicht in der IPv4-Adresse kodiert ist. Um die MAC-Adresse in Erfahrung zu bringen wird in dem Netzwerk ein ARP-Paket broadcastet, auf den der Rechner mit der gesuchten IP-Adresse mit seiner MAC-Adresse antwortet. Für IPv6 wurde ARP durch das Neighbor Discovery Protocol (NDP) abgelöst.
+	
+	\item Das \textbf{Internet Protocol} (IP) ist das wichtigste Protokoll der Internet Layer (Internetschicht), welches die Übertragung von Datagrammen zwischen Netzwerken ermöglicht, wobei sich die Datagramme aus einem IP-Header und einem Payload zusammensetzen. Der Header entspricht dabei IPv4 (20Byte + optinale Parameter) oder IPv6 (40Byte + optionale Parameter) und enthät die IP-Adresse des Absenders (Source) und des Empfängers (Destination), ebenso wie TTL und weitere Informationen, die die Routing-Funktionalität unterstützen.
+	
+	\item Das \textbf{Transmission Control Protocol} (TCP) ist neben UDP das wichtigste Protokoll der Transport Layer (Übertragungsschicht), welches die verbindungsbasierte, fehlerfreie und geordnete Übertragung von Datenpaketen zwischen zwei Programmen (Client und Server) ermöglicht. Es besteht aus einem Header (20Byte + Optionen) und Payload, wobei der Header neben Quellport und Zielport eine Checksumme von Header UND Payload und eine Sequenznummer enthält, welche die Fehlerüberprüfung und geordnete Übertragung realisieren.
+	
+	\item Das \textbf{Intermet Message Control Protocol} (IMCP) ist ein unterstützendes Protokoll der Internet Layer (Internetschicht), welches von Netzwerkgeräten genutzt wird, um Betriebsinformationen, insbesondere Fehlermeldungen, an Teilnehmer eines Netzwerkes zu versehenden. Der Header besteht aus den Feldern Type, Code, welches Typ und Subtyp der Kontrollnachricht kodierien (z.B. 3|0: Destination network unreachable), ebenso wie eine Checksumme, die Payload enthält beispielsweise das Datenpaket, welches einen Netzwerkfehler ausgelöst hat.
+	
+	\item \textbf{Open Shortest Path First} (OSPF) ist ein sogenanntes \textit{Interior Gateway Protocol} (IGP) der Internet Layer (Internetschicht), welches innerhalb einer Routing-Domäne benutzt wird, um die optimalen Routen für Datenpakete zwischen Knoten des Netzwerkes festzulegen. Um die Topologie des Netzwerks zu bestimmen können die Netzwerkknoten 'Hello Messages' austauschen, um Adjazenzen im Netzwerk festzustellen; hieraus kann eine Adjazenzliste der gesamten Routing-Domäne zusammengestellt werden, welche zwischen den Knoten mittels 'Database Description Messages' ausgetauscht wird und benutzt werden kann, um ein Minimum Spanning Tree des als Graph modellierten Netzwerkes nach einer geeigneten Gewichtsfunktion zu berechnen und somit optimal zu routen. Die Datenpakete dieses Protokolls haben kein zugrundeliegendes Transportschicht-Datagramm, die Daten werden direkt in einen IP-Header verpackt.
+	
+	\item Im Gegensatz zum OSPF handelt es sich beim \textbf{Boder Gateway Protocol} (BGP) um ein \textit{Exterior Gateway Protocol}. Es wird im Zusammenspiel mit IGPs von Internetprovidern genutzt, um das Routing von Datenpaketen zwischen einzelnen Netzwerken zu optimieren.
+	
+	
+\end{enumerate}
+
+\section*{Aufgabe 2}
+
+\inputmintedframed{c}{tracert.c}
+
+
+\end{document}
