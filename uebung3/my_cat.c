@@ -15,7 +15,7 @@ int printfile(FILE *source){
 	{
 		fprintf(stderr, "An error has occured while reading!\n");
 		if(errno == ENOENT){
-			fprintf(stderr, "The file specified does not exist!\n");
+			fprintf(stderr, "The file specified does not exist!");
 		}
 		return 0;
 	}
@@ -42,7 +42,6 @@ int main(int argc, char* argv[]){
 	}
 	else if(argc == 2){
 		FILE *source = fopen(argv[1],"r");
-		int ret = printfile(source);
 		if(ret == 0) return 0;
 	}
 	else{

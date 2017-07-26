@@ -13,6 +13,8 @@
 
 \begin{document}
 	
+	\setlength{\parindent}{0em} 
+	
 	\definecolor{bg}{RGB}{230,230,230}
 	\newcommand{\inputmintedframed}[2]{
 		\begin{mdframed}[linecolor=bg,backgroundcolor=bg]
@@ -64,8 +66,48 @@ NTFS kann mit Hilfe von Log-Dateien und Checkpoint Informationen die Stabilität
 \textbf{Verwaltbare Speichergröße}
 Mit NTFS können Festplatten mit zusammen bis zu 256 TB bei einer Clustergröße von 64 KB verwaltet werden. Eine Datei kann unter diesen Voraussetzungen bis zu 256 TB groß sein. Der Standard von 4 KB Clustergröße erlaubt jedoch nur eine Festplattenkapazität von 16 TB und analog eine maximale Dateigröße von 16 TB. 
 
-Quelle:
-https://technet.microsoft.com/en-us/library/dn466522(v=ws.11).aspx
+\textbf{Weitere Features}
+
+Quellen:\\
+\url{https://technet.microsoft.com/en-us/library/dn466522(v=ws.11).aspx}
+
+\subsubsection*{ext4}
+
+ext4 (extended filesystem 4) ist ein quelloffennes Journaling-Dateisystem, welches unter Linux 2.6.28 veröffentlicht wurde und einige Verbesserungen gegenüber dem Vorgänger ext3 implementiert.
+
+\begin{minipage}{\textwidth}
+	\includegraphics[width=0.5\textwidth]{indirect_block_map.pdf} \includegraphics[width=0.5\textwidth]{extents.pdf}
+	\captionof{figure}{Schema der Indirect Block Map (links) wie in ext3 verwendet und des in ext4 verwendeten Extent Trees. Quelle [2].}
+\end{minipage}
+
+Anders als noch bei ext3 erfolgt die Abbildung der logischen Adressblöcke nicht durch 'Indirect Block Maps' sondern durch die sogenannte extent-Datenstruktur (12Byte). Diese implementiert einen Desktriptor bestehend aus logischer Adresse (32bit), Länge/extent (15bit) und physischer Adresse (48bit) einer zusammenhängenden Sequenz von Blöcken, wobei mit logischer und physischer Adresse die entsprechenden Adressen des ersten Blocks in der Sequenz gemeint ist und mit der Länge die Anzahl der Blöcke in der Sequenz. Dies ermöglicht es, größere Dateien sehr effizient zu speichern, da ein Extent-Tree wesentlich weniger Knoten benötigt als eine vergleichbare Indirect Block Map.
+
+\textbf{Sicherheit} -
+
+\textbf{Zuverlässigkeit}
+Wie auch NTFS ist ext4 über ein Journaling-FS, welches Nanosekunden-Timestamps unterstützt (Millisekunden-Timestamps für NTFS ?). Somit können Veränderung des Dateisystems in noch kürzeren Zeitabständen beobachtet werden und nach Abstürzen und Fehlern die Integrität des Dateisystems wiederhergestellt.
+
+\textbf{Verwaltbare Speichergröße}
+
+Die extent-Dateistruktur ermöglicht somit die Realisierung eines Dateisystems, welches bis zu 1EB Speicher verwalten kann. Ferner können anders als beim Vorgänger-Betriebssystem beliebig viele Unterverzeichnisse eingerichtet werden. Die maximale Dateigröße beträgt dabei 16TB.
+
+\textbf{Weitere Features}
+
+ext4 verfügt über fortgeschrittene Defragmentierungsmechanismen, sodass der Benutzer idR keine nachträgliche Defragmentierung durchführen muss. Unter anderem soll die Delayed Block Allocation, also die Möglichkeit der Alloziierung von Blöcken erst beim Write-Back (also beim Schreiben von Cache-Inhalten in den Hauptspeicher) dafür sorgen, dass die Fragmentierung klein gehalten wird.
+
+Quellen:\\
+\url{https://ext4.wiki.kernel.org/index.php/Ext4\_Howto}\\
+\url{https://www.usenix.org/legacy/event/lsf07/tech/cao\_m.pdf}\\
+
+Im direkten Vergleich ist es schwer, zu sagen, welches Dateisystem das Bessere ist, da beide Systeme zwar in grundlegenden Punkten wie zum Beispiel beim Journaling-System übereinstimmen, aber ansonsten über recht unterschiedliche Features verfügen. In direkten Verrgleichen der Schreib-Performance scheinen die Dateisysteme sich nicht signifikant zu unterscheiden:
+
+\begin{minipage}{\textwidth}
+	\centering \includegraphics[width=0.7\textwidth]{performance.png}
+	\captionof{figure}{https://www.segfault.digital/it/general/filesystem-performance-ssd/}
+\end{minipage}
+
+Die Möglichkeit, mehr Speicher zu verwalten scheint aber zumindest zu suggerieren, dass ext4 das zukunftsträchtigere Betriebssystem ist.
+
 \section*{Aufgabe 2}
 
 

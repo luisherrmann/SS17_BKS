@@ -74,10 +74,12 @@ Dem hält Torvalds entgegen, dass der MINIX-Microkernel in der Theorie zwar sch�
 
 \url{http://www.oreilly.com/openbook/opensources/book/appa.html}
 \subsubsection*{Eigene Meinung}
-nolithische Kernels zu Sicherheitslücken kommen, beispielsweise durch Fremdsoftware wie Geräte-Treiber. Diese werden im Kernel des Betriebssystems mit entsprechenden Systemrechten ausgeführt. Wenn die Geräte-Treiber selbst Schadsoftware oder auch nur Sicherheitslücken enthalten, entstehen große Sicherheitslücken für das gesamte System. Auf der anderen Seite ist die Performance in Systemen mit monolithischen Kernels deutlich besser. Die entscheidene Frage ist also, ob Priorität auf Performance oder Sicherheit liegen sollte. 
+Da monoltische Kernel (fast) alle Betriebssystem-Komponenten enthalten, kann es leiccht zu Sicherheitslücken kommen, beispielsweise durch Fremdsoftware wie Geräte-Treiber. Diese werden im Kernel des Betriebssystems mit entsprechenden Systemrechten ausgeführt. Wenn die Geräte-Treiber selbst Schadsoftware oder auch nur Sicherheitslücken enthalten, entstehen große Sicherheitslücken für das gesamte System. Auf der anderen Seite ist die Performance in Systemen mit monolithischen Kernels deutlich besser. Die entscheidene Frage ist also, ob Priorität auf Performance oder Sicherheit liegen sollte. 
 
 	Angesichts der massiven Sicherheitsprobleme im IT-Sektor und der Verbesserung der Performance durch Hardware, muss diese Frage zugunsten der Sicherheit beantwortet werden. Die wenigsten aktuellen Systeme haben wirklich ein Problem mit Performance, aber fast alle haben große Sicherheitsprobleme. Diese Situation wird unter anderem auch durch die weite Verbreitung monolithischer Kernels zulasten der Mikrokernels. Deshalb sollte die Entwicklung von Betriebssystemen mit Mikrokernel dringend wieder vorangetrieben werden.
 
+\section*{Aufgabe 2}
 
+\inputmintedframed{c}{trashcanl.c}
 
 \end{document}

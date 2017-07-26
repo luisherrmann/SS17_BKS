@@ -12,18 +12,8 @@
 int copy(char *sourcename, char *targetname){
 	int BUFFER_SIZE = 100;
 	char buffer[100];
-	int fd_target = open(targetname, O_WRONLY | O_APPEND | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
-	//O_EXCL Flag garantiert, dass das File erzeugt werden muss. Falls bereits existent, wird Fehler erzeugt.
-	if(fd_target < 0){
-		if(errno == EEXIST){
-			char *msg = "The specified target file already exists!\n";
-			write(STDERR_FILENO, msg, strlen(msg));
-		}
-		close(fd_target);
-		return EXIT_FAILURE;
-	}
 	int fd_source = open(sourcename, O_RDONLY);
-	if(fd_source < 0){
+	if(fd_source == -1){
 		if(errno == ENOENT){
 			char *msg = "The specified source file does not exist!\n";
 			write(STDERR_FILENO, msg, strlen(msg));
@@ -31,8 +21,18 @@ int copy(char *sourcename, char *targetname){
 		close(fd_source);
 		return EXIT_FAILURE;
 	}
-	ssize_t r;
-	ssize_t w;
+	int fd_target = open(targetname, O_WRONLY | O_APPEND | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
+	//O_EXCL Flag garantiert, dass das File erzeugt werden muss. Falls bereits existent, wird Fehler erzeugt.
+	if(fd_target == -1){
+		if(errno == EEXIST){
+			char *msg = "The specified target file already exists!\n";
+			write(STDERR_FILENO, msg, strlen(msg));
+		}
+		close(fd_target);
+		return EXIT_FAILURE;
+	}
+	ssize_t r; //gelesene Bytes
+	ssize_t w; //geschriebene Bytes
 	do{
 		r = read(fd_source,buffer,BUFFER_SIZE);
 		if(r == -1){
@@ -40,10 +40,10 @@ int copy(char *sourcename, char *targetname){
 			write(STDERR_FILENO, msg, strlen(msg));
 			return EXIT_FAILURE;
 		}
-		//read() returns 0 when eof is reached.
+		//read() gibt 0 zurueck wenn eof erreicht.
 		w=0;
 		while(w < r){
-			//Since written>=0, loop will only be entered if r >0)
+			//Da written>=0, eintritt in Loop nur fuer r >0)
 			ssize_t tmp = write(fd_target,buffer,r - w);
 			if(tmp == -1){
 				char *msg = "An error occured while writing.\n";
@@ -86,8 +86,9 @@ int main(int argc, char *argv[]){
 		if(strcmp(argv[1],"-l") == 0){
 			void *dd = opendir(".ti3_trashcan");
 			struct dirent *dir;
-			while((dir = readdir(dd)) != NULL){	//Falls opendir ergibt Fehler return -> NULL | readdir(NULL) return NULL
-				char *msg = malloc(strlen(dir->d_name) + 1); //+1 für das Steuerzeichen des Zeilenumbruchs
+			while((dir = readdir(dd)) != NULL){
+			//Bei Fehler gibt opendir() NULL zurueck und readdir(NULL) gibt NULL zurueck.
+				char *msg = malloc(strlen(dir->d_name) + 1); //+1 fuer das Steuerzeichen des Zeilenumbruchs
 				strcat(msg, dir->d_name);
 				strcat(msg, "\n");
 				write(STDERR_FILENO, msg, strlen(msg));

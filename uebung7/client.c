@@ -26,14 +26,14 @@ int write_to_stdin(){
 	const char *filename = "/shared_space";
 	sem_t *fd_sem;	
 	//Semaphor für die Freigabe des geteilten Speichers wird angelegt
-	if((fd_sem = sem_open("/shm_sem", 0, 0, 0)) == SEM_FAILED){
+	if((fd_sem = sem_open("/shm_sem", 0)) == SEM_FAILED){
 		fprintf(stderr, "Could not open semaphore: ERRNO %i\n", errno);
 		return EXIT_FAILURE;
 	}
 	// Zugriff auf den geteilten Speicherbereich
 	int fd_shm = shm_open(filename, O_RDWR, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
 	if(fd_shm == -1){
-		fprintf(stderr, "Error opening Shared Memory");
+		fprintf(stderr, "Error opening Shared Memory\n");
 		return EXIT_FAILURE;
 	}
 	// Verknüpfung des geteilten Speicherbereis mit dynamischen Addressen des Prozesses

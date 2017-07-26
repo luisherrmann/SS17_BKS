@@ -56,12 +56,12 @@ Data-Link-Layers bekommen als 2-Schicht von den physical-Layers (Schicht 1) (Bit
 	\item Verbindung zum Host aufbauen/schließen
 	
 \end{enumerate}
-\subsection{b) Angabe des Bitstrings der Ascii-Zeichen ''?~''}
+\subsection*{b) Angabe des Bitstrings der Ascii-Zeichen ''?~''}
 Ascii Wert von ? ist: 0x3F = 0011 1111 \\
 Ascii Wert von ~ ist: 0x7E = 0111 1110 \\
 \(\Rightarrow \) der Bitstring der Ascii-Zeichen ''?~'' lautet ''0011 1111 0111 1110''
 \subsubsection*{Ergänzung um die CRC16 Prüfsumme}
-Das CRC16 IBM Prüfpolynom lauten \(x^{16}+x^{15}+x^2 + 1 \Rightarrow \) 1 1000 0000 0000 0101 \\ \\
+Das CRC16 IBM Prüfpolynom lautet \(x^{16}+x^{15}+x^2 + 1 \Rightarrow \) 1 1000 0000 0000 0101 \\ \\
   \begin{tabular}{cl}
 &11 1111 0111 1110 0000 0000 0000 0000 \ / \ 1 1000 0000 0000 0101 = 10101001010100\\
 &\underline{11 0000 0000 0000 101}\\
@@ -87,6 +87,10 @@ Immer nach fünf Einerbits hintereinander wird eine Null eingefügt
 \subsubsection*{Amplitudenmodulation}
 \includegraphics[width=1.0\textwidth]{amplitude.png}
 \section*{Aufgabe 2}
+
+\subsection*{a + c}
+
+\inputmintedframed{c}{crc.c}
 
 \subsection*{c}
 Für die ersten 17-Bit unserer ersten Datei (gen1) wählen wir die bitweise Negation des Polynoms und ''füllen'' das letzte Byte mit Nullen und am Schluss einer 1 auf. \\ \\

@@ -8,8 +8,6 @@
 #include <inttypes.h>
 #include <string.h>
 
-#define BUF_SIZE 100
-
 //Expects: FILE struct pointer pointing to head of file
 //Returns: Result of crc operation applied on file read with file descriptor
 int crc_calc(FILE* source){
@@ -66,7 +64,7 @@ int main(int argc, char **argv){
 				return 0;
 			}
 			if(crc_calc(source) == 0){
-				fprintf(stdout, "Checksum matches!");
+				fprintf(stdout, "Checksum matches!\n");
 				fseek(source, 0, SEEK_END);
 				int filelen = ftell(source);
 				ftruncate(fileno(source), (off_t) filelen-2);
